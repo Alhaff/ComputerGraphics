@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -16,7 +18,9 @@ namespace CooridnateGrid.DrawingObjects
         public Vector2 Center
         {
             get { return center; }
-            set { IChanged = true; center = value; }
+            set { center = value;
+                OnPropertyChanged("Center");
+            }
         }
 
         private Vector2 r;
@@ -24,12 +28,21 @@ namespace CooridnateGrid.DrawingObjects
         public Vector2 R
         {
             get { return r; }
-            set { IChanged = true; r = value; }
+            set {
+                r = value; 
+                OnPropertyChanged("R"); }
         }
         
         public bool IChanged { get; set; }
 
         private Func<Vector2, Vector2> transformFunctions;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
         public Func<Vector2, Vector2> TransformFunctions
         {
             get => transformFunctions;
