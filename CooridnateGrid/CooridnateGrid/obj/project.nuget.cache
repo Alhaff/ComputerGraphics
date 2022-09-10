@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "liAiJAJyY4Sty7gXMl0ZA9nSzeqHfHQBOEzDBRk3lkixPZZxCkzpSEafk7WHy8DvcXrEC+m9lC4yKdk6ejPdRA==",
+  "success": true,
+  "projectFilePath": "D:\\proga\\ComputerGraphics\\CoordinateGrid\\CooridnateGrid\\CooridnateGrid\\CooridnateGrid.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Alhaff\\.nuget\\packages\\writeablebitmapex\\1.6.8\\writeablebitmapex.1.6.8.nupkg.sha512"
+  ],
+  "logs": []
+}
