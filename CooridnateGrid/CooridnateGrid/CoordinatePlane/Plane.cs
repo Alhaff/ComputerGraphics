@@ -30,14 +30,25 @@ namespace CooridnateGrid.CoordinatePlane
         {
             Objects.Remove(obj);
         }
-
+        private void DrawObj(IDrawnObject obj)
+        {
+            var lineBuilder = new LinkedList<Vector2>();
+            foreach (var contour in obj.GetContourPoints())
+            {
+                foreach (var points in contour.Select(point => ToBitmapCoord(obj.TransformFunctions(point)))
+                                              .LineCreator())
+                {
+                        WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
+                            (int)points.Item2.X, (int)points.Item2.Y, obj.MyColor);
+                }
+            }
+        }
         public virtual void Draw()
         {
                 WrBitmap.Clear();
                 foreach (var obj in Objects)
                 {
-
-                    obj.Draw(this);
+                    DrawObj(obj);
                 }
         }
 
