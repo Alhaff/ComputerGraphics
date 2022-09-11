@@ -53,8 +53,9 @@ namespace CooridnateGrid
         private void CreatePlane()
         {
             Pl = new CartesianPlane(BitmapWidth, BitmapHeight, 20);
-            Axes = new CoordinateAxis(BitmapWidth, BitmapHeight);
+            Axes = new CoordinateAxis(BitmapWidth / Pl.StepInPixels, BitmapHeight / Pl.StepInPixels);
             Circle = ((Circle)this.Resources["mainCircle"]);
+            Circle.MyColor = Color.FromRgb(255, 0, 0);
             Pl.AddObject(Axes);
             Pl.AddObject(Circle);
         }

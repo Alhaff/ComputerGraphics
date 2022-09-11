@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:CooridnateGrid"
         xmlns:vect="clr-namespace:System.Numerics;assembly=System.Numerics"
         xmlns:drawObj="clr-namespace:CooridnateGrid.DrawnObjects"
+        xmlns:custom="clr-namespace:CooridnateGrid.UIItems"
         xmlns:coordPlane="clr-namespace:CooridnateGrid.CoordinatePlane"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
@@ -31,8 +32,8 @@
                     Background="LightBlue" Margin="0 0 10 0" Orientation="Vertical"
                     DataContext="{DynamicResource mainCircle}">
             <TextBlock Text="Radius" FontSize="20" Margin="20" TextAlignment="Center"></TextBlock>
-            <TextBox x:Name="RSetField" MinWidth="20" 
-               Text="{Binding R, Converter={StaticResource Vector2Converter}, UpdateSourceTrigger = PropertyChanged}"></TextBox>
+            <custom:SubmitTextBox x:Name="RSetField" MinWidth="10" 
+               Text="{Binding R, UpdateSourceTrigger = Explicit}"></custom:SubmitTextBox>
         </StackPanel>
         <Border BorderBrush="Green" BorderThickness="4" Grid.Row="1" Grid.Column="2">
             <Grid x:Name="ViewPortContainer">
