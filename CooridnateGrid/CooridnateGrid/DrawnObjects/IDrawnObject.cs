@@ -5,14 +5,15 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace CooridnateGrid.DrawnObjects
 {
     public interface IDrawnObject : INotifyPropertyChanged
     {
-        public void Draw(CoordinatePlane.Plane plane);
-
+        public IEnumerable<IEnumerable<Vector2>> GetContourPoints();
+        public Color MyColor { get; set; }
         public Func<Vector2, Vector2> TransformFunctions { get; set; }
     }
 }
