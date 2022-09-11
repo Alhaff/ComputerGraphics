@@ -13,76 +13,82 @@ namespace CooridnateGrid.DrawnObjects
 {
     public class Circle : IDrawnObject
     {
-        private Vector2 center;
+        private Vector2 _center;
+        private double _r;
+        private Func<Vector2, Vector2> _transformFunctions;
+        private Color _myColor;
+
+        public Color MyColor
+        {
+            get { return _myColor; }
+            set { _myColor = value;
+                OnPropertyChanged("MyColor");
+            }
+        }
 
         public Vector2 Center
         {
-            get { return center; }
-            set { center = value;
+            get { return _center; }
+            set { _center = value;
                 OnPropertyChanged("Center");
             }
         }
 
-        private Vector2 r;
-
-        public Vector2 R
+        public double R
         {
-            get { return r; }
+            get { return _r; }
             set {
-                r = value; 
+                _r = value; 
                 OnPropertyChanged("R"); }
         }
 
-        private Func<Vector2, Vector2> transformFunctions;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
         public Func<Vector2, Vector2> TransformFunctions
         {
-            get => transformFunctions;
-            set { transformFunctions = value;
-                  OnPropertyChanged("TransformFunctions");
+            get => _transformFunctions;
+            set
+            {
+                _transformFunctions = value;
+                OnPropertyChanged("TransformFunctions");
             }
         }
 
         public Circle()
         {
             Center = new Vector2(0,0);
-            R = new Vector2(0,0);
+            R = 0;
+            MyColor = Color.FromRgb(0, 255, 0);
             TransformFunctions = v => v;
         }
-        public Circle(Vector2 startCoord, Vector2 r)
+
+        public Circle(Vector2 startCoord, double r, Color color)
         {
             Center = startCoord;
             R = r;
+            MyColor = color;
             TransformFunctions = v => v;
         }
 
-        public void Draw(CoordinatePlane.Plane plane)
-        {
-            var wr = plane.WrBitmap;
-            foreach (var p in CirclePoints().Select(p=> plane.ToBitmapCoord(TransformFunctions(p))).Bigrams())
-            {
-                wr.DrawLine((int)p.Item1.X, (int)p.Item1.Y, 
-                            (int)p.Item2.X, (int)p.Item2.Y, Color.FromRgb(255, 0, 0));
-            }
-        }
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        private IEnumerable<Vector2> CirclePoints()
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            var points = new List<Tuple<int, int>>();
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+        private IEnumerable<Vector2> GetCirclePoints()
+        {
             for (double t = 0; t <= 2 * Math.PI; t += Math.PI / 24)
             {
-                var x = R.Length() * Math.Cos(t) + Center.X;
-                var y = R.Length() * Math.Sin(t) + Center.Y;
+                var x = R * Math.Cos(t) + Center.X;
+                var y = R * Math.Sin(t) + Center.Y;
                 yield return new Vector2((float)x, (float)y);
             }
-            yield return new Vector2((float)(R.Length() * Math.Cos(0) + Center.X),
-                                     (float)(R.Length() * Math.Sin(0) + Center.Y));
+            yield return new Vector2((float)(R * Math.Cos(0) + Center.X),
+                                     (float)(R * Math.Sin(0) + Center.Y));
+        }
+        public IEnumerable<IEnumerable<Vector2>> GetContourPoints()
+        {
+            yield return GetCirclePoints();
         }
     }
 }

@@ -14,24 +14,64 @@ namespace CooridnateGrid.DrawnObjects
 {
     public class CoordinateAxis : IDrawnObject
     {
-        private int width;
-        public int Width {
-            get { return width; }
-            set { width = value;
+        private int _cellAmountOnAbscissaAxe;
+        private int _cellAmountOnOrdinateAxe;
+        private Func<Vector2, Vector2> _transformFunctions;
+
+        private Color _myColor;
+
+        public Color MyColor
+        {
+            get { return _myColor; }
+            set { _myColor = value; }
+        }
+
+        public int CellAmountOnAbscissaAxe {
+            get { return _cellAmountOnAbscissaAxe; }
+            set { _cellAmountOnAbscissaAxe = value;
                 OnPropertyChanged("Width");
             }
         }
 
-        private int height;
-
-        public int Height
+        public int CellAmountOnOrdinateAxe
         {
-            get { return height; }
-            set { height = value;
+            get { return _cellAmountOnOrdinateAxe; }
+            set { _cellAmountOnOrdinateAxe = value;
                 OnPropertyChanged("Height");
             }
         }
-        private Func<Vector2, Vector2> transformFunctions;
+        public Func<Vector2, Vector2> TransformFunctions 
+        {
+            get => _transformFunctions;
+            set { _transformFunctions = value;
+                OnPropertyChanged("TransformFunctions");
+            } 
+        }
+        /// <summary>
+        ///  Створює об'єкт кооординатних вісей
+        /// </summary>
+        /// <param name="cellAmountOnAbscissaAxe"> Загальна кількість клітинок на осі абсцис</param>
+        /// <param name="cellAmountOnOrdinateAxe">Загальна кількість клітинок на осі ординат</param>
+        public CoordinateAxis(int cellAmountOnAbscissaAxe, int cellAmountOnOrdinateAxe)
+        {
+           CellAmountOnAbscissaAxe = cellAmountOnAbscissaAxe;
+           CellAmountOnOrdinateAxe = cellAmountOnOrdinateAxe;
+           MyColor = Color.FromRgb(0, 0, 0);
+           TransformFunctions = v => v;
+        }
+        /// <summary>
+        ///  Створює об'єкт кооординатних вісей
+        /// </summary>
+        /// <param name="cellAmountOnAbscissaAxe"> Загальна кількість клітинок на осі абсцис</param>
+        /// <param name="cellAmountOnOrdinateAxe">Загальна кількість клітинок на осі ординат</param>
+        /// <param name="color">Колір вісей</param>
+        public CoordinateAxis(int cellAmountOnAbscissaAxe, int cellAmountOnOrdinateAxe, Color color)
+        {
+            CellAmountOnAbscissaAxe = cellAmountOnAbscissaAxe;
+            CellAmountOnOrdinateAxe = cellAmountOnOrdinateAxe;
+            MyColor = color;
+            TransformFunctions = v => v;
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -39,46 +79,34 @@ namespace CooridnateGrid.DrawnObjects
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
-        public Func<Vector2, Vector2> TransformFunctions 
-        {
-            get => transformFunctions;
-            set { transformFunctions = value;
-                OnPropertyChanged("TransformFunctions");
-            } 
-        }
-        public CoordinateAxis()
-        {
-            Width = 0;
-            Height = 0;
-            TransformFunctions = v => v;
-        }
-        public CoordinateAxis(int width, int heigth)
-        {
-           Width = width;
-           Height = heigth;
-           TransformFunctions = v => v;
-        }
-        private Vector2 Point(int x, int y) => new Vector2(- Width / 2 + x, - Height / 2 + y);
 
-        public void Draw(CoordinatePlane.Plane plane)
+        private Vector2 Point(int x, int y) => new Vector2(x,  y);
+
+        private IEnumerable<Vector2> GetAbscissaLine(int y)
         {
-            var wr = plane.WrBitmap;
-            for(var i = 0; i < Width; i++)
+            for (int x = -CellAmountOnAbscissaAxe / 2; x <= CellAmountOnAbscissaAxe / 2; x++)
             {
-                var prev = plane.ToBitmapCoord(TransformFunctions(Point(i,0)));
-                var curr = plane.ToBitmapCoord(TransformFunctions(Point(i, Height)));
-                    wr.DrawLine((int)prev.X, (int)prev.Y,
-                           (int)curr.X, (int)curr.Y, Color.FromRgb(0, 0, 0));
+                yield return Point(x, y);
+            }
+        }
+        private IEnumerable<Vector2> GetOrdinateLine(int x)
+        {
+            for (int y = -CellAmountOnOrdinateAxe / 2; y <= CellAmountOnOrdinateAxe / 2; y++)
+            {
+                yield return Point(x, y);
+            }
+        }
+        public IEnumerable<IEnumerable<Vector2>> GetContourPoints()
+        {
+            for(var x = -CellAmountOnAbscissaAxe /2; x <= CellAmountOnAbscissaAxe/2; x++)
+            {
+                yield return GetOrdinateLine(x);
             }
 
-            for (var i = 0; i < Height; i++)
+            for (var y = -CellAmountOnOrdinateAxe / 2; y <= CellAmountOnOrdinateAxe / 2; y++)
             {
-                var prev = plane.ToBitmapCoord(TransformFunctions(Point(0, i)));
-                var curr = plane.ToBitmapCoord(TransformFunctions(Point(Width, i)));
-                wr.DrawLine((int)prev.X, (int)prev.Y,
-                       (int)curr.X, (int)curr.Y, Color.FromRgb(0, 0, 0));
+                yield return GetAbscissaLine(y);
             }
-
         }
     }
 }

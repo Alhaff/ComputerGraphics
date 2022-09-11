@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,24 +9,32 @@ namespace CooridnateGrid.DrawnObjects
 {
 	public static class IEnumerableExtensions
 	{
-		public static IEnumerable<Tuple<T, T>> Bigrams<T>(this IEnumerable<T> items)
+		static private bool PointBelongsStraightLine(Vector2 lineStart, Vector2 lineEnd, Vector2 point)
+        {
+			double diff = (point.X - lineStart.X) / (lineEnd.X - lineStart.X) -
+						  (point.Y - lineStart.Y) / (lineEnd.Y - lineStart.Y);
+			return diff > 0 - 1E-10 && diff < 0 + 1E-10;
+		}
+		public static IEnumerable<Tuple<Vector2, Vector2>> LineCreator(this IEnumerable<Vector2> items)
 		{
-			T temp = default(T);
-			int counter = 0;
-			foreach (T item in items)
+			var line = new LinkedList<Vector2>();
+			foreach (Vector2 item in items)
 			{
-				counter++;
-				if (counter == 2)
+				if (line.Count == 2)
 				{
-					yield return Tuple.Create(temp, item);
-					counter = 1;
-					temp = item;
+					if(PointBelongsStraightLine(line.First.Value,line.Last.Value,item))
+					{
+						line.RemoveLast();
+					}
+                    else
+                    {
+						yield return Tuple.Create(line.First.Value, line.Last.Value);
+						line.RemoveFirst();
+					}
 				}
-				else
-				{
-					temp = item;
-				}
+				line.AddLast(item);
 			}
+			yield return Tuple.Create(line.First.Value, line.Last.Value);
 		}
 	}
 }
