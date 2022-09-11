@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-namespace CooridnateGrid.DrawingObjects
+namespace CooridnateGrid.DrawnObjects
 {
-    public interface IDrawingObject : INotifyPropertyChanged
+    public interface IDrawnObject : INotifyPropertyChanged
     {
         public void Draw(CoordinatePlane.Plane plane);
 

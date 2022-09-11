@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CooridnateGrid.DrawingObjects
+namespace CooridnateGrid.DrawnObjects
 {
 	public static class IEnumerableExtensions
 	{

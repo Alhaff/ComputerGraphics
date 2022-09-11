@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using CooridnateGrid.DrawingObjects;
+using CooridnateGrid.DrawnObjects;
 
 namespace CooridnateGrid.CoordinatePlane
 {

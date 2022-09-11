@@ -10,9 +10,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CooridnateGrid.CoordinatePlane;
 
-namespace CooridnateGrid.DrawingObjects
+namespace CooridnateGrid.DrawnObjects
 {
-    public class CoordinateAxis : IDrawingObject
+    public class CoordinateAxis : IDrawnObject
     {
         private int width;
         public int Width {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CooridnateGrid"
         xmlns:vect="clr-namespace:System.Numerics;assembly=System.Numerics"
-        xmlns:drawObj="clr-namespace:CooridnateGrid.DrawingObjects"
+        xmlns:drawObj="clr-namespace:CooridnateGrid.DrawnObjects"
         xmlns:coordPlane="clr-namespace:CooridnateGrid.CoordinatePlane"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"

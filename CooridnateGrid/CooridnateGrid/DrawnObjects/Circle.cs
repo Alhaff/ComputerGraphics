@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace CooridnateGrid.DrawingObjects
+namespace CooridnateGrid.DrawnObjects
 {
-    public class Circle : IDrawingObject
+    public class Circle : IDrawnObject
     {
         private Vector2 center;
 

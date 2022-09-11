@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace CooridnateGrid.DrawingObjects
+namespace CooridnateGrid.DrawnObjects
 {
     public class Vector2ToStringConverter : IValueConverter
     {
