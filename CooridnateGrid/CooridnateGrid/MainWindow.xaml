@@ -4,10 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CooridnateGrid"
+        xmlns:vect="clr-namespace:System.Numerics;assembly=System.Numerics"
+        xmlns:drawObj="clr-namespace:CooridnateGrid.DrawingObjects"
+        xmlns:coordPlane="clr-namespace:CooridnateGrid.CoordinatePlane"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         Title="MainWindow">
+    <Window.Resources>
+        <drawObj:Vector2ToStringConverter x:Key="Vector2Converter"/>
+        <drawObj:Circle x:Key="mainCircle"/>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"></ColumnDefinition>
@@ -21,9 +28,11 @@
             <RowDefinition Height="10"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="1" Grid.Row="1" MinWidth="200" 
-                    Background="LightBlue" Margin="0 0 10 0" Orientation="Vertical">
+                    Background="LightBlue" Margin="0 0 10 0" Orientation="Vertical"
+                    DataContext="{DynamicResource mainCircle}">
             <TextBlock Text="Radius" FontSize="20" Margin="20" TextAlignment="Center"></TextBlock>
-            <Button x:Name="Radius" Content="R += 0.5" MinWidth="100" Margin="20" Click="Radius_Click"/>
+            <TextBox x:Name="RSetField" MinWidth="20" 
+               Text="{Binding R, Converter={StaticResource Vector2Converter}, UpdateSourceTrigger = PropertyChanged}"></TextBox>
         </StackPanel>
         <Border BorderBrush="Green" BorderThickness="4" Grid.Row="1" Grid.Column="2">
             <Grid x:Name="ViewPortContainer">

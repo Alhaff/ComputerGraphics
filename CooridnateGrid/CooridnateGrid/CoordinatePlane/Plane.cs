@@ -33,17 +33,12 @@ namespace CooridnateGrid.CoordinatePlane
 
         public virtual void Draw()
         {
-            if (Objects.Exists(obj => obj.IChanged))
-            {
                 WrBitmap.Clear();
                 foreach (var obj in Objects)
                 {
 
                     obj.Draw(this);
-                    obj.IChanged = false;
-
                 }
-            }
         }
 
         public virtual Vector2 ToBitmapCoord(Vector2 planeCoord)

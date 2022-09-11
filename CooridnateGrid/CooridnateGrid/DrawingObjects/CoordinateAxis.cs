@@ -46,7 +46,12 @@ namespace CooridnateGrid.DrawingObjects
                 OnPropertyChanged("TransformFunctions");
             } 
         }
-
+        public CoordinateAxis()
+        {
+            Width = 0;
+            Height = 0;
+            TransformFunctions = v => v;
+        }
         public CoordinateAxis(int width, int heigth)
         {
            Width = width;

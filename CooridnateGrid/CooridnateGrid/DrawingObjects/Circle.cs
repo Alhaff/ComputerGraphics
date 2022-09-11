@@ -32,8 +32,6 @@ namespace CooridnateGrid.DrawingObjects
                 r = value; 
                 OnPropertyChanged("R"); }
         }
-        
-        public bool IChanged { get; set; }
 
         private Func<Vector2, Vector2> transformFunctions;
 
@@ -46,9 +44,17 @@ namespace CooridnateGrid.DrawingObjects
         public Func<Vector2, Vector2> TransformFunctions
         {
             get => transformFunctions;
-            set { IChanged = true; transformFunctions = value; }
+            set { transformFunctions = value;
+                  OnPropertyChanged("TransformFunctions");
+            }
         }
 
+        public Circle()
+        {
+            Center = new Vector2(0,0);
+            R = new Vector2(0,0);
+            TransformFunctions = v => v;
+        }
         public Circle(Vector2 startCoord, Vector2 r)
         {
             Center = startCoord;

@@ -20,14 +20,14 @@ namespace CooridnateGrid.DrawingObjects
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var str = ((string)value).Split(' ');
-            if(str.Length != 2) return DependencyProperty.UnsetValue;
-            float x;
-            float y;
-            if(!float.TryParse(str[0], out x) || !float.TryParse(str[1],out y))
-            {
-                return DependencyProperty.UnsetValue;
-            }
-            return new Vector2(x,y);
+            float x =0;
+            float y =0;
+            if(str.Length > 0)
+                float.TryParse(str[0], out x);
+            if(str.Length > 1)
+                float.TryParse(str[1], out y);
+            return new Vector2(x, y);
+
         }
     }
 }

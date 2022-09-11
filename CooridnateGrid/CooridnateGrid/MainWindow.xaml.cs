@@ -54,14 +54,9 @@ namespace CooridnateGrid
         {
             Pl = new CartesianPlane(BitmapWidth, BitmapHeight, 20);
             Axes = new CoordinateAxis(BitmapWidth, BitmapHeight);
-            Circle = new Circle(new Vector2(0, 0), new Vector2(0,0));
+            Circle = ((Circle)this.Resources["mainCircle"]);
             Pl.AddObject(Axes);
             Pl.AddObject(Circle);
-        }
-
-        private void Radius_Click(object sender, RoutedEventArgs e)
-        {
-            Circle.R += new Vector2((float)0.5,0);
         }
     }
 }
