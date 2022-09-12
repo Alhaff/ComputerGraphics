@@ -16,20 +16,15 @@ namespace CooridnateGrid.DrawnObjects
     /// де стартова точка відповідає точці на колі з кутом fi = 0 
     ///</para>
     /// </summary>
-    public class Sector : IDrawnObject
+    public class Sector : DrawnObject
     {
         //variables
         #region
-        private Vector2 _sectorEnd;
         private double _lenBetweenTwoBreakPoints;
         public readonly bool IsSegmentExistBetweenBreakPoints;
         private readonly double LenToDRelation;
         private Vector2 _center;
         private double _r;
-        private Func<Vector2, Vector2> _transformFunctions;
-        private Color _myColor;
-       
-        public event PropertyChangedEventHandler? PropertyChanged;
         #endregion
         //Propreties
         #region
@@ -67,15 +62,7 @@ namespace CooridnateGrid.DrawnObjects
                 OnPropertyChanged("LenBetweenTwoBreakPoints");
             }
         }
-        public Func<Vector2, Vector2> TransformFunctions
-        {
-            get => _transformFunctions;
-            set
-            {
-                _transformFunctions = value;
-                OnPropertyChanged("TransformFunctions");
-            }
-        }
+
         /// <summary>
         /// Початкова координата розрива
         /// <para>за замовчуваням знаходиться на колі з кутом fi = 0</para>
@@ -86,15 +73,6 @@ namespace CooridnateGrid.DrawnObjects
         /// <para>Визначається як точка, що лежить на колі за додатнім напрямком кута fi та знаходиться на відстані L заданої при створені</para>  
         /// </summary>
         public Vector2 SectorEnd { get => SectorStart.Rotate(2 * Math.Asin(LenToDRelation)); }
-        public Color MyColor
-        {
-            get { return _myColor; }
-            set
-            {
-                _myColor = value;
-                OnPropertyChanged("MyColor");
-            }
-        }
         #endregion
 
         /// <summary>
@@ -116,11 +94,7 @@ namespace CooridnateGrid.DrawnObjects
             IsSegmentExistBetweenBreakPoints = isBetweenPoints;
             
         }
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+
         private IEnumerable<Vector2> GetSectorPoints()
         {
             double startAngle = IsSegmentExistBetweenBreakPoints ? 0 : SectorEnd.Angle();
@@ -132,7 +106,7 @@ namespace CooridnateGrid.DrawnObjects
                 yield return new Vector2((float)x, (float)y);
             }
         }
-        public IEnumerable<IEnumerable<Vector2>> GetContourPoints()
+        public override IEnumerable<IEnumerable<Vector2>> GetContourPoints()
         {
             yield return GetSectorPoints();
         }

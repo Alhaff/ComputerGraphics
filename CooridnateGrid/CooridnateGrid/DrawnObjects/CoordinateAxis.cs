@@ -12,19 +12,10 @@ using CooridnateGrid.CoordinatePlane;
 
 namespace CooridnateGrid.DrawnObjects
 {
-    public class CoordinateAxis : IDrawnObject
+    public class CoordinateAxis : DrawnObject
     {
         private int _cellAmountOnAbscissaAxe;
         private int _cellAmountOnOrdinateAxe;
-        private Func<Vector2, Vector2> _transformFunctions;
-
-        private Color _myColor;
-
-        public Color MyColor
-        {
-            get { return _myColor; }
-            set { _myColor = value; }
-        }
 
         public int CellAmountOnAbscissaAxe {
             get { return _cellAmountOnAbscissaAxe; }
@@ -40,13 +31,7 @@ namespace CooridnateGrid.DrawnObjects
                 OnPropertyChanged("Height");
             }
         }
-        public Func<Vector2, Vector2> TransformFunctions 
-        {
-            get => _transformFunctions;
-            set { _transformFunctions = value;
-                OnPropertyChanged("TransformFunctions");
-            } 
-        }
+        
         /// <summary>
         ///  Створює об'єкт кооординатних вісей
         /// </summary>
@@ -56,8 +41,7 @@ namespace CooridnateGrid.DrawnObjects
         {
            CellAmountOnAbscissaAxe = cellAmountOnAbscissaAxe;
            CellAmountOnOrdinateAxe = cellAmountOnOrdinateAxe;
-            MyColor = Color.FromRgb(128, 128, 128);
-           TransformFunctions =v => v;
+           MyColor = Color.FromRgb(128, 128, 128);
         }
         /// <summary>
         ///  Створює об'єкт кооординатних вісей
@@ -70,14 +54,6 @@ namespace CooridnateGrid.DrawnObjects
             CellAmountOnAbscissaAxe = cellAmountOnAbscissaAxe;
             CellAmountOnOrdinateAxe = cellAmountOnOrdinateAxe;
             MyColor = color;
-            TransformFunctions = v => v;
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
         private Vector2 Point(int x, int y) => new Vector2(x,  y);
@@ -96,7 +72,7 @@ namespace CooridnateGrid.DrawnObjects
                 yield return Point(x, y);
             }
         }
-        public IEnumerable<IEnumerable<Vector2>> GetContourPoints()
+        public override IEnumerable<IEnumerable<Vector2>> GetContourPoints()
         {
             for(var x = -CellAmountOnAbscissaAxe /2; x <= CellAmountOnAbscissaAxe/2; x++)
             {
