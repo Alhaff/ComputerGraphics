@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace CooridnateGrid.CoordinatePlane
@@ -30,7 +31,7 @@ namespace CooridnateGrid.CoordinatePlane
         {
             Objects.Remove(obj);
         }
-        private void DrawObj(DrawnObject obj)
+        internal void DrawObj(DrawnObject obj)
         {
             var lineBuilder = new LinkedList<Vector2>();
             foreach (var contour in obj.GetContourPoints())
@@ -48,10 +49,27 @@ namespace CooridnateGrid.CoordinatePlane
                 WrBitmap.Clear();
                 foreach (var obj in Objects)
                 {
-                    DrawObj(obj);
+                    if(obj is IDrawingSelf)
+                    {
+                         ((IDrawingSelf)obj).Draw(this);
+                    }
+                    else {
+                        DrawObj(obj);
+                    }
                 }
         }
-
+        internal static System.Drawing.Imaging.PixelFormat ConvertPixelFormat(System.Windows.Media.PixelFormat sourceFormat)
+        {
+            if( PixelFormats.Bgr24 == sourceFormat)
+                    return System.Drawing.Imaging.PixelFormat.Format24bppRgb;    
+            if (PixelFormats.Bgra32 == sourceFormat)
+                    return System.Drawing.Imaging.PixelFormat.Format32bppArgb;
+            if (PixelFormats.Bgr32 == sourceFormat)
+                    return System.Drawing.Imaging.PixelFormat.Format32bppRgb;
+            if (PixelFormats.Pbgra32 == sourceFormat)
+                return System.Drawing.Imaging.PixelFormat.Format32bppArgb;
+            return new System.Drawing.Imaging.PixelFormat();
+        }
         public virtual Vector2 ToBitmapCoord(Vector2 planeCoord)
         {
             throw new NotImplementedException();
