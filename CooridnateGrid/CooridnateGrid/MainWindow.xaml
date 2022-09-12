@@ -37,7 +37,6 @@
         </StackPanel>
         <Border BorderBrush="Green" BorderThickness="4" Grid.Row="1" Grid.Column="2">
             <Grid x:Name="ViewPortContainer">
-
                 <Image x:Name="ViewPort" Loaded="ViewPort_Loaded"></Image>
             </Grid>
         </Border>
