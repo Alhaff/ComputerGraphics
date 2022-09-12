@@ -56,8 +56,10 @@ namespace CooridnateGrid
             Axes = new CoordinateAxis(BitmapWidth / Pl.StepInPixels, BitmapHeight / Pl.StepInPixels);
             Circle = ((Circle)this.Resources["mainCircle"]);
             Circle.MyColor = Color.FromRgb(255, 0, 0);
+            var sector = new Sector(new Vector2(0, 0), 4, 3, false, Color.FromRgb(255, 0, 0),v => v.Rotate(-Math.Asin(1.5 /4.0)) );
             Pl.AddObject(Axes);
             Pl.AddObject(Circle);
+            Pl.AddObject(sector);
         }
     }
 }
