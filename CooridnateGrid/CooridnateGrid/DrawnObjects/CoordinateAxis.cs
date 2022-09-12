@@ -56,8 +56,8 @@ namespace CooridnateGrid.DrawnObjects
         {
            CellAmountOnAbscissaAxe = cellAmountOnAbscissaAxe;
            CellAmountOnOrdinateAxe = cellAmountOnOrdinateAxe;
-           MyColor = Color.FromRgb(0, 0, 0);
-           TransformFunctions = v => v;
+            MyColor = Color.FromRgb(128, 128, 128);
+           TransformFunctions =v => v;
         }
         /// <summary>
         ///  Створює об'єкт кооординатних вісей
