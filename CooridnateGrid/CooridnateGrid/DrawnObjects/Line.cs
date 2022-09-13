@@ -10,11 +10,14 @@ namespace CooridnateGrid.DrawnObjects
 {
     public class Line : DrawnObject
     {
-        private Vector2 _start;
-        private double _length;
-        private double _angle;
+        #region Variables
+        private Vector3 _start;
+        private Vector3 _end;
+        #endregion
 
-        public Vector2 Start
+        #region Properties
+
+        public Vector3 Start
         {
             get { return _start; }
             set { 
@@ -23,38 +26,31 @@ namespace CooridnateGrid.DrawnObjects
                 }
         }
 
-        public double Length
+        public Vector3 End
         {
-            get { return _length; }
-            set { 
-                    _length = value;
-                    OnPropertyChanged("Length");
-                }
+            get { return _end; }
+            set
+            {
+                _end = value;
+                OnPropertyChanged("End");
+            }
         }
+        #endregion
 
-        public double Angle
-        {
-            get { return _angle; }
-            set { _angle = value;
-                    OnPropertyChanged("Length");
-                }
-        }
 
-        public Vector2 End { get => (Start + new Vector2((float)Length, 0)).Rotate(Angle); }
 
-        public Line(Vector2 start, double length, double angle, Color color)
+        public Line(Vector3 start, Vector3 end, Color color)
         {
             Start = start;
-            Length = length;
-            Angle = angle;
+            End = end;
         }
 
-        private IEnumerable<Vector2> GetLinePoint()
+        internal IEnumerable<Vector3> GetLinePoint()
         {
             yield return Start;
             yield return End;
         }
-        public override IEnumerable<IEnumerable<Vector2>> GetContourPoints()
+        public override IEnumerable<IEnumerable<Vector3>> GetContourPoints()
         {
             yield return GetLinePoint();
         }
