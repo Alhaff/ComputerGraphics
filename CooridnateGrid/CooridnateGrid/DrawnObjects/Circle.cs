@@ -15,7 +15,6 @@ namespace CooridnateGrid.DrawnObjects
     {
         private Vector2 _center;
         private double _r;
-        private Color _myColor;
 
         public Vector2 Center
         {
