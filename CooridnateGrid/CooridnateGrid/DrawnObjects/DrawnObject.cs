@@ -16,14 +16,14 @@ namespace CooridnateGrid.DrawnObjects
     /// </summary>
     public abstract class DrawnObject : INotifyPropertyChanged
     {
-        protected Func<Vector2, Vector2> _transformFunctions = v => v;
+        protected Func<Vector3, Vector3> _transformFunctions = v => v;
         private Color _myColor;
         /// <summary>
         /// Повертає перелік точок контуру рисунку. Так як об'єкт може мати не суцільний контур 
         /// повертає його у вигляді переліку точок які можна з'єднати нерозривною лінією.
         /// </summary>
-        /// <returns>type - IEnumerable<IEnumerable<Vector2>></returns>
-        public abstract IEnumerable<IEnumerable<Vector2>> GetContourPoints();
+        /// <returns>type - IEnumerable<IEnumerable<Vector3>></returns>
+        public abstract IEnumerable<IEnumerable<Vector3>> GetContourPoints();
         /// <summary>
         /// Колір лінії контуру об'єкта
         /// </summary>
@@ -39,7 +39,7 @@ namespace CooridnateGrid.DrawnObjects
         /// <summary>
         /// Функція, що буду застосована, до всіх точок об'єкту
         /// </summary>
-        public Func<Vector2, Vector2> TransformFunctions
+        public Func<Vector3, Vector3> TransformFunctions
         {
             get => _transformFunctions;
             set
