@@ -8,6 +8,6 @@ namespace CooridnateGrid.DrawnObjects
 {
     public interface IDrawingSelf
     {
-        public void Draw(CoordinatePlane.Plane pl);
+        public void Draw(CoordinatePlane.MyPlane pl);
     }
 }
