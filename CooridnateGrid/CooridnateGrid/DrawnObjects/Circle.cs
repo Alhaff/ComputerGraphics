@@ -13,10 +13,42 @@ namespace CooridnateGrid.DrawnObjects
 {
     public class Circle : DrawnObject
     {
-        private Vector2 _center;
-        private double _r;
+        #region Variables
 
-        public Vector2 Center
+        private float _r;
+        private Vector3 _center;
+        private Vector3 _startBreakPoint;
+        private Vector3 _endBreakPoint;
+
+        #endregion
+
+        #region Propreties
+  
+        public Vector3 StartBreakPoint
+        {
+            get { return _startBreakPoint; }
+            set {
+                    if (value.Length() <= 2 * R)
+                    {
+                    _startBreakPoint = value;
+                    OnPropertyChanged("StartBreakPoint");
+                    }
+                }
+        }
+       
+        public Vector3  EndBreakPoint
+        {
+            get { return _endBreakPoint; }
+            set {
+                if (value.Length() <= 2 * R)
+                {
+                    _endBreakPoint = value;
+                    OnPropertyChanged("EndBreakPoint");
+                }
+            }
+        }
+
+        public Vector3 Center
         {
             get { return _center; }
             set { _center = value;
@@ -24,41 +56,64 @@ namespace CooridnateGrid.DrawnObjects
             }
         }
 
-        public double R
+        public float R
         {
             get { return _r; }
             set {
-                _r = value; 
+                _r = value;
+                MoveBreakPoint(Center,value);
                 OnPropertyChanged("R"); }
         }
 
+        #endregion
+
+
         public Circle()
         {
-            Center = new Vector2(0,0);
+            Center = new Vector3(0,0,1);
             R = 0;
             MyColor = Color.FromRgb(0, 255, 0);
-            TransformFunctions = v => v;
+            TransformMe = v => v;
         }
 
-        public Circle(Vector2 startCoord, double r, Color color)
+        public Circle(Vector3 startCoord, float r, Color color)
         {
             Center = startCoord;
             R = r;
             MyColor = color;
+            StartBreakPoint =( Center + new Vector3(R,0,0));
+            EndBreakPoint = (Center + new Vector3(R, 0, 0));
         }
 
-        private IEnumerable<Vector2> GetCirclePoints()
+        public Circle(Vector3 startCoord, float r, Vector3 startBreakPoint, Vector3 endBreakPoint, Color color)
         {
-            for (double t = 0; t <= 2 * Math.PI; t += Math.PI / 24)
-            {
-                var x = R * Math.Cos(t) + Center.X;
-                var y = R * Math.Sin(t) + Center.Y;
-                yield return new Vector2((float)x, (float)y);
-            }
-            yield return new Vector2((float)(R * Math.Cos(0) + Center.X),
-                                     (float)(R * Math.Sin(0) + Center.Y));
+            Center = startCoord;
+            R = r;
+            StartBreakPoint = startBreakPoint;
+            EndBreakPoint = endBreakPoint;
+            MyColor = color;
         }
-        public override IEnumerable<IEnumerable<Vector2>> GetContourPoints()
+        private void MoveBreakPoint(Vector3 newCenter, float newR)
+        {
+            var startAngle = StartBreakPoint.Angle();
+            var endAngle = EndBreakPoint.Angle();
+            StartBreakPoint = (newCenter + new Vector3(R, 0, 0)).Rotate(startAngle);
+            EndBreakPoint = (newCenter + new Vector3(R, 0, 0)).Rotate(endAngle);
+        }
+        internal IEnumerable<Vector3> GetCirclePoints()
+        {
+            var startAngle = StartBreakPoint.Angle() < 0? 2 * Math.PI - Math.Abs(StartBreakPoint.Angle()) : StartBreakPoint.Angle();
+            var endAngle = EndBreakPoint.Angle() <= 0 ? 2 * Math.PI - Math.Abs(EndBreakPoint.Angle()) : EndBreakPoint.Angle();
+            var start = -2* Math.PI + Math.Max(endAngle, startAngle);
+            var end = Math.Min(endAngle, startAngle);
+            end = end == 0 ? 2 * Math.PI : end;
+            var RVect = Center + new Vector3(R, 0, 0);
+            for (double t = start; t <= end; t += Math.PI / 180)
+            {
+                yield return RVect.Rotate(t);
+            }
+        }
+        public override IEnumerable<IEnumerable<Vector3>> GetContourPoints()
         {
             yield return GetCirclePoints();
         }
