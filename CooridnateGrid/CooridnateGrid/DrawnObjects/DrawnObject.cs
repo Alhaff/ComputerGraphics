@@ -22,10 +22,16 @@ namespace CooridnateGrid.DrawnObjects
         /// повертає його у вигляді переліку точок які можна з'єднати нерозривною лінією.
         /// </summary>
         /// <returns>type - IEnumerable<IEnumerable<Vector3>></returns>
-        public abstract IEnumerable<IEnumerable<Vector3>> GetContourPoints();
+        protected abstract IEnumerable<IEnumerable<Vector3>> ContourPoints();
         /// <summary>
         /// Колір лінії контуру об'єкта
         /// </summary>
+        public IEnumerable<IEnumerable<Vector3>> GetContourPoints()
+        {
+            foreach (var countour in ContourPoints())
+                yield return countour.Select(point => TransformMe(point));
+        }
+
         public Color MyColor
         {
             get { return _myColor; }
