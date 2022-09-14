@@ -39,15 +39,7 @@ namespace CooridnateGrid.DrawnObjects
         /// <summary>
         /// Функція, що буду застосована, до всіх точок об'єкту
         /// </summary>
-        public Func<Vector3, Vector3> TransformFunctions
-        {
-            get => _transformFunctions;
-            set
-            {
-                _transformFunctions = value;
-                OnPropertyChanged("TransformFunctions");
-            }
-        }
+        public Func<Vector3, Vector3> TransformMe { get; set; } = v => v;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
