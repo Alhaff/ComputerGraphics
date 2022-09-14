@@ -10,11 +10,11 @@ using System.Windows.Data;
 
 namespace CooridnateGrid.DrawnObjects
 {
-    public class Vector2ToStringConverter : IValueConverter
+    public class VectorToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return $"{((Vector2)value).X} {((Vector2)value).Y}";
+            return $"{((Vector3)value).X} {((Vector2)value).Y}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -26,7 +26,7 @@ namespace CooridnateGrid.DrawnObjects
                 float.TryParse(str[0], out x);
             if(str.Length > 1)
                 float.TryParse(str[1], out y);
-            return new Vector2(x, y);
+            return new Vector3(x, y, 1);
 
         }
     }
