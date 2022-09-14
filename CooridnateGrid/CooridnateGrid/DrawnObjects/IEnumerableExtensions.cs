@@ -9,16 +9,16 @@ namespace CooridnateGrid.DrawnObjects
 {
 	public static class IEnumerableExtensions
 	{
-		static private bool PointBelongsStraightLine(Vector2 lineStart, Vector2 lineEnd, Vector2 point)
+		static private bool PointBelongsStraightLine(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
         {
 			double diff = (point.X - lineStart.X) / (lineEnd.X - lineStart.X) -
 						  (point.Y - lineStart.Y) / (lineEnd.Y - lineStart.Y);
 			return diff > 0 - 1E-10 && diff < 0 + 1E-10;
 		}
-		public static IEnumerable<Tuple<Vector2, Vector2>> LineCreator(this IEnumerable<Vector2> items)
+		public static IEnumerable<Tuple<Vector3, Vector3>> LineCreator(this IEnumerable<Vector3> items)
 		{
-			var line = new LinkedList<Vector2>();
-			foreach (Vector2 item in items)
+			var line = new LinkedList<Vector3>();
+			foreach (Vector3 item in items)
 			{
 				if (line.Count == 2)
 				{
@@ -34,7 +34,8 @@ namespace CooridnateGrid.DrawnObjects
 				}
 				line.AddLast(item);
 			}
-			yield return Tuple.Create(line.First.Value, line.Last.Value);
+			if(line.Count > 0)
+				yield return Tuple.Create(line.First.Value, line.Last.Value);
 		}
 	}
 }
