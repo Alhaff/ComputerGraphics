@@ -16,6 +16,11 @@ namespace CooridnateGrid.DrawnObjects
             return new Vector3(newX,newY,1);
         }
 
+        public static float LenFor2Dimension(this Vector3 v)
+        {
+            var copy = new Vector2(v.X, v.Y);
+            return copy.Length();
+        }
         public static double Angle(this Vector3 first) => Math.Atan2(first.Y, first.X);
     }
 }
