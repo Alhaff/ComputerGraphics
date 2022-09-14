@@ -37,8 +37,6 @@ namespace CooridnateGrid.DrawnObjects
         }
         #endregion
 
-
-
         public Line(Vector3 start, Vector3 end, Color color)
         {
             Start = start;
@@ -53,6 +51,11 @@ namespace CooridnateGrid.DrawnObjects
         public override IEnumerable<IEnumerable<Vector3>> GetContourPoints()
         {
             yield return GetLinePoint();
+        }
+
+        static public Vector3 GetLineEndPoint(Vector3 startPoint, float length, double angle = 0)
+        {
+            return startPoint + (new Vector3(length, 0, 0)).Rotate(angle);
         }
     }
 }
