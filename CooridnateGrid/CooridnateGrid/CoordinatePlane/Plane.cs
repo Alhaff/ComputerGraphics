@@ -38,7 +38,7 @@ namespace CooridnateGrid.CoordinatePlane
             var lineBuilder = new LinkedList<Vector3>();
             foreach (var contour in obj.GetContourPoints())
             {
-                foreach (var points in contour.Select(point => ToBitmapCoord(obj.TransformMe(point)))
+                foreach (var points in contour.Select(point => ToBitmapCoord(point))
                                               .LineCreator())
                 {
                         WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
