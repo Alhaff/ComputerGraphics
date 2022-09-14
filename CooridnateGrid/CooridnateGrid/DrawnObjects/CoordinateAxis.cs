@@ -74,7 +74,7 @@ namespace CooridnateGrid.DrawnObjects
                 yield return Point(x, y);
             }
         }
-        public override IEnumerable<IEnumerable<Vector3>> GetContourPoints()
+        protected override IEnumerable<IEnumerable<Vector3>> ContourPoints()
         {
             for(var x = -CellAmountOnAbscissaAxe /2; x <= CellAmountOnAbscissaAxe/2; x++)
             {
@@ -92,14 +92,14 @@ namespace CooridnateGrid.DrawnObjects
         {
             pl.DrawObj(this);
 
-            foreach (var points in GetAbscissaLine(0).Select(point => pl.ToBitmapCoord(point))
+            foreach (var points in GetAbscissaLine(0).Select(point => pl.ToBitmapCoord(TransformMe(point)))
                                               .LineCreator())
             {
                 pl.WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
                            (int)points.Item2.X, (int)points.Item2.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
             }
 
-            foreach (var points in GetOrdinateLine(0).Select(point => pl.ToBitmapCoord(point))
+            foreach (var points in GetOrdinateLine(0).Select(point => pl.ToBitmapCoord(TransformMe(point)))
                                               .LineCreator())
             {
                 pl.WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
@@ -109,16 +109,16 @@ namespace CooridnateGrid.DrawnObjects
         }
         private void DrawElements(CoordinatePlane.MyPlane pl)
         {
-            var abscissaEnd = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe/2, 0));
-            var ordinateEnd = pl.ToBitmapCoord(Point(0, CellAmountOnOrdinateAxe/2));
+            var abscissaEnd = pl.ToBitmapCoord(TransformMe(Point(CellAmountOnAbscissaAxe/2, 0)));
+            var ordinateEnd = pl.ToBitmapCoord(TransformMe(Point(0, CellAmountOnOrdinateAxe/2)));
             var k = 0.6;
             var k1 = 0.4;
-            var abscissaUp = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 -k, k1));
-            var abscissaDown = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 -k, -k1));
-            var ordinateRight = pl.ToBitmapCoord(Point(k1, CellAmountOnOrdinateAxe / 2 - k));
-            var ordinateLeft = pl.ToBitmapCoord(Point(-k1, CellAmountOnOrdinateAxe / 2 - k));
-            var temp1 = pl.ToBitmapCoord(Point(1,0.3));
-            var temp2 = pl.ToBitmapCoord(Point(1, -0.3));
+            var abscissaUp = pl.ToBitmapCoord(TransformMe(Point(CellAmountOnAbscissaAxe / 2 -k, k1)));
+            var abscissaDown = pl.ToBitmapCoord(TransformMe(Point(CellAmountOnAbscissaAxe / 2 -k, -k1)));
+            var ordinateRight = pl.ToBitmapCoord(TransformMe(Point(k1, CellAmountOnOrdinateAxe / 2 - k)));
+            var ordinateLeft = pl.ToBitmapCoord(TransformMe(Point(-k1, CellAmountOnOrdinateAxe / 2 - k)));
+            var temp1 = pl.ToBitmapCoord(TransformMe(Point(1,0.3)));
+            var temp2 = pl.ToBitmapCoord(TransformMe(Point(1, -0.3)));
 
             pl.WrBitmap.DrawLine((int)abscissaEnd.X, (int)abscissaEnd.Y, (int)abscissaUp.X,
                 (int)abscissaUp.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
@@ -142,10 +142,10 @@ namespace CooridnateGrid.DrawnObjects
             var stride = wr.BackBufferStride;
             var pixelPtr = wr.BackBuffer;
             var bm2 = new Bitmap(w, h, stride, CoordinatePlane.MyPlane.ConvertPixelFormat(wr.Format), pixelPtr);
-            var xPoint = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 - 1.5, 0 - 0.5));
-            var yPoint = pl.ToBitmapCoord(Point(0 + 0.5, CellAmountOnOrdinateAxe / 2 - 0.5));
-            var zeroPoint = pl.ToBitmapCoord(Point(0 + 0.1, 0 + 0.1));
-            var onePoint = pl.ToBitmapCoord(Point(1 + 0.1, 0 + 0.1));
+            var xPoint = pl.ToBitmapCoord(TransformMe(Point(CellAmountOnAbscissaAxe / 2 - 1.5, 0 - 0.5)));
+            var yPoint = pl.ToBitmapCoord(TransformMe(Point(0 + 0.5, CellAmountOnOrdinateAxe / 2 - 0.5)));
+            var zeroPoint = pl.ToBitmapCoord(TransformMe(Point(0 + 0.1, 0 + 0.1)));
+            var onePoint = pl.ToBitmapCoord(TransformMe(Point(1 + 0.1, 0 + 0.1)));
             wr.Lock();
             using (var g = Graphics.FromImage(bm2))
             {

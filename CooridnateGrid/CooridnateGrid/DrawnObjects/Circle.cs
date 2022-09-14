@@ -28,7 +28,7 @@ namespace CooridnateGrid.DrawnObjects
         {
             get { return _startBreakPoint; }
             set {
-                    if (value.Length() <= 2 * R)
+                    if (value.LenFor2Dimension() <= R + 1E-5)
                     {
                     _startBreakPoint = value;
                     OnPropertyChanged("StartBreakPoint");
@@ -40,7 +40,8 @@ namespace CooridnateGrid.DrawnObjects
         {
             get { return _endBreakPoint; }
             set {
-                if (value.Length() <= 2 * R)
+               
+                if ( value.LenFor2Dimension() <= R + 1E-5)
                 {
                     _endBreakPoint = value;
                     OnPropertyChanged("EndBreakPoint");
@@ -97,8 +98,8 @@ namespace CooridnateGrid.DrawnObjects
         {
             var startAngle = StartBreakPoint.Angle();
             var endAngle = EndBreakPoint.Angle();
-            StartBreakPoint = (newCenter + new Vector3(R, 0, 0)).Rotate(startAngle);
-            EndBreakPoint = (newCenter + new Vector3(R, 0, 0)).Rotate(endAngle);
+            StartBreakPoint = Line.GetLineEndPoint(newCenter, newR, startAngle);
+            EndBreakPoint = Line.GetLineEndPoint(newCenter, newR, endAngle);
         }
         internal IEnumerable<Vector3> GetCirclePoints()
         {
@@ -107,13 +108,12 @@ namespace CooridnateGrid.DrawnObjects
             var start = -2* Math.PI + Math.Max(endAngle, startAngle);
             var end = Math.Min(endAngle, startAngle);
             end = end == 0 ? 2 * Math.PI : end;
-            var RVect = Center + new Vector3(R, 0, 0);
             for (double t = start; t <= end; t += Math.PI / 180)
             {
-                yield return RVect.Rotate(t);
+                yield return Line.GetLineEndPoint(Center, R, t);
             }
         }
-        public override IEnumerable<IEnumerable<Vector3>> GetContourPoints()
+        protected override IEnumerable<IEnumerable<Vector3>> ContourPoints()
         {
             yield return GetCirclePoints();
         }

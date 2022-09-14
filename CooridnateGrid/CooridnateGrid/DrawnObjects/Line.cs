@@ -55,7 +55,7 @@ namespace CooridnateGrid.DrawnObjects
             yield return End;
         }
 
-        public override IEnumerable<IEnumerable<Vector3>> GetContourPoints()
+        protected override IEnumerable<IEnumerable<Vector3>> ContourPoints()
         {
             yield return GetLinePoint();
         }
