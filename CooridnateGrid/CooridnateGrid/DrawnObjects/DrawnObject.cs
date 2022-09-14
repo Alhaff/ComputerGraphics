@@ -16,7 +16,6 @@ namespace CooridnateGrid.DrawnObjects
     /// </summary>
     public abstract class DrawnObject : INotifyPropertyChanged
     {
-        protected Func<Vector3, Vector3> _transformFunctions = v => v;
         private Color _myColor;
         /// <summary>
         /// Повертає перелік точок контуру рисунку. Так як об'єкт може мати не суцільний контур 
