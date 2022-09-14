@@ -43,11 +43,18 @@ namespace CooridnateGrid.DrawnObjects
             End = end;
         }
 
+        public Line(Vector3 start, float length, double angle, Color color)
+        {
+            Start = start;
+            End = GetLineEndPoint(start, length,angle);
+        }
+
         internal IEnumerable<Vector3> GetLinePoint()
         {
             yield return Start;
             yield return End;
         }
+
         public override IEnumerable<IEnumerable<Vector3>> GetContourPoints()
         {
             yield return GetLinePoint();
