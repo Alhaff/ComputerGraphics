@@ -12,4 +12,9 @@
     <PackageReference Include="WriteableBitmapEx" Version="1.6.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ExtensionClasses\" />
+    <Folder Include="ConverterClasses\" />
+  </ItemGroup>
+
 </Project>
