@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace CooridnateGrid.DrawnObjects
 {
-    public static class Vector2Extensions
+    public static class VectorExtensions
     {
-        public static Vector2 Rotate(this Vector2 start, double angle)
+        public static Vector3 Rotate(this Vector3 start, double angle)
         {
             float newX = (float)(start.X * Math.Cos(angle) - start.Y * Math.Sin(angle));
             float newY = (float)(start.X * Math.Sin(angle) + start.Y * Math.Cos(angle));
-            return new Vector2(newX,newY);
+            return new Vector3(newX,newY,1);
         }
 
-        public static double Angle(this Vector2 first) => Math.Atan2(first.Y, first.X);
+        public static double Angle(this Vector3 first) => Math.Atan2(first.Y, first.X);
     }
 }
