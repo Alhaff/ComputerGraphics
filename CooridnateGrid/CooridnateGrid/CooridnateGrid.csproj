@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <Folder Include="ExtensionClasses\" />
-    <Folder Include="ConverterClasses\" />
   </ItemGroup>
 
 </Project>
