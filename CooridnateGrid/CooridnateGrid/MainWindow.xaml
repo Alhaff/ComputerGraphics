@@ -6,21 +6,27 @@
         xmlns:local="clr-namespace:CooridnateGrid"
         xmlns:vect="clr-namespace:System.Numerics;assembly=System.Numerics"
         xmlns:drawObj="clr-namespace:CooridnateGrid.DrawnObjects"
+        xmlns:converter="clr-namespace:CooridnateGrid.ConverterClasses"
+        xmlns:transform="clr-namespace:CooridnateGrid.Transformation"
         xmlns:custom="clr-namespace:CooridnateGrid.UIItems"
-        xmlns:coordPlane="clr-namespace:CooridnateGrid.CoordinatePlane"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         Title="MainWindow">
     <Window.Resources>
-        <drawObj:Vector2ToStringConverter x:Key="Vector2Converter"/>
-        <drawObj:Circle x:Key="mainCircle"/>
+        <converter:VectorToStringConverter x:Key="VectorConverter"/>
+        <converter:Vector3ToStringConvertor x:Key="Vector3Converter"/>
+        <drawObj:Lab1Drawing x:Key="mainObj"/>
+        <transform:MoveTransformation x:Key="move"/>
+        <transform:AffineTransformation x:Key="athene"/>
+        <transform:RotateTransformation x:Key="rotate"/>
+        <transform:ProjectiveTransformation x:Key="project"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
             <ColumnDefinition Width="10"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -29,11 +35,124 @@
             <RowDefinition Height="10"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="1" Grid.Row="1" MinWidth="200" 
-                    Background="LightBlue" Margin="0 0 10 0" Orientation="Vertical"
-                    DataContext="{DynamicResource mainCircle}">
-            <TextBlock Text="Radius" FontSize="20" Margin="20" TextAlignment="Center"></TextBlock>
-            <custom:SubmitTextBox x:Name="RSetField" MinWidth="10" 
-               Text="{Binding R, UpdateSourceTrigger = Explicit}"></custom:SubmitTextBox>
+                    Background="LightBlue" Margin="0 0 10 0" Orientation="Vertical">
+            <TextBlock Text="1кл. - 20px" FontSize="14" Margin="10 10 10 0" TextAlignment="Center"></TextBlock>
+            <Button Margin="20 10 20 10" x:Name="ToDafaultValue" Click="ToDafaultValue_Click">До початкових розмірів</Button>
+            <TextBlock Text="Перетворення" FontSize="20" Margin="10" TextAlignment="Center"></TextBlock>
+            <TabControl  DataContext="{DynamicResource mainObj}">
+                <TabItem Header="Лінійні">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Margin="10 10 10 0" DataContext="{Binding InternalCircle}" Orientation="Horizontal">
+                            <TextBlock Text="r = " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding R, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10 0 10 0" DataContext="{Binding ExternalCircle}" Orientation="Horizontal">
+                            <TextBlock Text="R =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding R, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                            <TextBlock Text="w =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding InternalWidth, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                            <TextBlock Text="W =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding ExternalWidth, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                            <TextBlock Text="h =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding InternalHeight, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                            <TextBlock Text="h =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding ExternalHeigth, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                            <TextBlock Text="bW =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding BottomRectangleWidth, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                            <TextBlock Text="bH =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding BottomRectangleHeight, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10 0 10 0" Orientation="Vertical" >
+                           
+                            <TextBlock Text="Зміщення" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
+                            <StackPanel HorizontalAlignment="Center" DataContext="{ DynamicResource move}" Orientation="Horizontal">
+                                <TextBlock Text="dX =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding dX, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                                <TextBlock Text="dY =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding dY, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                            </StackPanel>
+                            <TextBlock Text="Обертання" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
+                            <StackPanel DataContext="{ DynamicResource rotate }" Orientation="Horizontal">
+                                <TextBlock Text="Центр обертання(x,y):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                <custom:SubmitTextBox Width="60" TextAlignment="Center" Margin="0 5 0 5" 
+                                    Text="{Binding Center, Converter={StaticResource VectorConverter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                                <TextBlock Text="Angle =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding Angle, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Афінні">
+                    <StackPanel Orientation="Vertical" DataContext="{DynamicResource athene}">
+                        <StackPanel Orientation="Horizontal"  Margin="10">
+                        <TextBlock Text="R0(x,y):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                        <custom:SubmitTextBox Width="60" TextAlignment="Center" Margin="5" 
+                            Text="{Binding R0, Converter={StaticResource VectorConverter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"  Margin="10">
+                            <TextBlock Text="Rx(x,y):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="60" TextAlignment="Center" Margin="5" 
+                            Text="{Binding Rx, Converter={StaticResource VectorConverter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"  Margin="10">
+                            <TextBlock Text="Ry(x,y):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="60" TextAlignment="Center" Margin="5" 
+                            Text="{Binding Ry,Converter={StaticResource VectorConverter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Проективні">
+                    <StackPanel Orientation="Vertical" DataContext="{DynamicResource project}">
+                        <StackPanel Orientation="Horizontal"  Margin="10">
+                            <TextBlock Text="R0(x,y,w):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="100" TextAlignment="Center" Margin="5" 
+                            Text="{Binding R0,Converter={StaticResource Vector3Converter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"  Margin="10">
+                            <TextBlock Text="Rx(x,y,w):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="100" TextAlignment="Center" Margin="5" 
+                            Text="{Binding Rx, Converter={StaticResource Vector3Converter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"  Margin="10">
+                            <TextBlock Text="Ry(x,y,w):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <custom:SubmitTextBox Width="100" TextAlignment="Center" Margin="5" 
+                            Text="{Binding Ry, Converter={StaticResource Vector3Converter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"  Margin="10">
+                            <Button x:Name="CancelProjectionTransformation" Content="Скасувати" Margin="5"
+                                    Click="CancelProjectionTransformation_Click"></Button>
+                            <Button x:Name="ApplyProjectionTransformation" Content="Застосувати" Margin="5"
+                                    Click="ApplyProjectionTransformation_Click"> </Button>
+                        </StackPanel>
+                        <Button x:Name="RotateButton" Content="Обертати" Margin="15 0 15 15" Click="RotateButton_Click"></Button>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+           
         </StackPanel>
         <Border BorderBrush="Green" BorderThickness="4" Grid.Row="1" Grid.Column="2">
             <Grid x:Name="ViewPortContainer">
