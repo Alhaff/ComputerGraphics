@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace CooridnateGrid.DrawnObjects
+namespace CooridnateGrid.ConverterClasses
 {
     public class VectorToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return $"{((Vector3)value).X} {((Vector2)value).Y}";
+            return $"{((Vector3)value).X} | {((Vector3)value).Y}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var str = ((string)value).Split(' ');
+            var str = ((string)value).Split(new char[] { ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
             float x =0;
             float y =0;
             if(str.Length > 0)
