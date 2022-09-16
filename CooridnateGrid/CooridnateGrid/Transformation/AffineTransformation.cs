@@ -10,8 +10,8 @@ namespace CooridnateGrid.Transformation
     public class AffineTransformation : Transformation
     {
         private Vector3 _r0 = new Vector3(0,0,1);
-        private Vector3 _rx = new Vector3(1,0,0);
-        private Vector3 _ry = new Vector3(0,1,0);
+        private Vector3 _rx = new Vector3(1,0,1);
+        private Vector3 _ry = new Vector3(0,1,1);
 
         public Vector3 R0
         {
