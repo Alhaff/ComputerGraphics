@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using CooridnateGrid.ExtensionsClasses;
 
 namespace CooridnateGrid.DrawnObjects
 {
@@ -62,7 +63,8 @@ namespace CooridnateGrid.DrawnObjects
 
         static public Vector3 GetLineEndPoint(Vector3 startPoint, float length, double angle = 0)
         {
-            return startPoint + (new Vector3(length, 0, 0)).Rotate(angle);
+            var tmp = startPoint + (new Vector3(length, 0, 0)).Rotate(angle);
+            return new Vector3(tmp.X, tmp.Y, 1);
         }
     }
 }
