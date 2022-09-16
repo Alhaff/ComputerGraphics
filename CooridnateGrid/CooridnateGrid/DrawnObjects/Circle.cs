@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using CooridnateGrid.ExtensionsClasses;
 
 namespace CooridnateGrid.DrawnObjects
 {
@@ -74,7 +75,6 @@ namespace CooridnateGrid.DrawnObjects
             Center = new Vector3(0,0,1);
             R = 0;
             MyColor = Color.FromRgb(0, 255, 0);
-            TransformMe = v => v;
         }
 
         public Circle(Vector3 startCoord, float r, Color color)
