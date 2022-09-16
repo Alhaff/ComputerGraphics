@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using CooridnateGrid.ExtensionsClasses;
 
 namespace CooridnateGrid.CoordinatePlane
 {
@@ -48,17 +49,21 @@ namespace CooridnateGrid.CoordinatePlane
         }
         public void Draw()
         {
-                WrBitmap.Clear();
-                foreach (var obj in Objects)
+            WrBitmap.Clear();
+            foreach (var obj in Objects)
+            {
+                if (obj != null)
                 {
-                    if(obj is IDrawingSelf)
+                    if (obj is IDrawingSelf)
                     {
-                         ((IDrawingSelf)obj).Draw(this);
+                        ((IDrawingSelf)obj).Draw(this);
                     }
-                    else {
+                    else
+                    {
                         DrawObj(obj);
                     }
                 }
+          }
         }
        
         public virtual Vector3 ToBitmapCoord(Vector3 planeCoord)
