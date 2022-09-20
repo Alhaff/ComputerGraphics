@@ -17,9 +17,12 @@ namespace CooridnateGrid.DrawnObjects
 {
     public class CoordinateAxis : DrawnObject, IDrawingSelf
     {
+        #region Variables
         private int _cellAmountOnAbscissaAxe;
         private int _cellAmountOnOrdinateAxe;
+        #endregion
 
+        #region Propreties
         public int CellAmountOnAbscissaAxe {
             get { return _cellAmountOnAbscissaAxe; }
             set { _cellAmountOnAbscissaAxe = value;
@@ -34,7 +37,16 @@ namespace CooridnateGrid.DrawnObjects
                 OnPropertyChanged("Height");
             }
         }
-        
+        #endregion
+
+        #region Constructors
+
+        public CoordinateAxis(MyPlane pl)
+        {
+            CellAmountOnAbscissaAxe = pl.WrBitmap.PixelWidth / pl.StepInPixels;
+            CellAmountOnOrdinateAxe = pl.WrBitmap.PixelHeight / pl.StepInPixels;
+            MyColor = System.Windows.Media.Color.FromRgb(128, 128, 128);
+        }
         /// <summary>
         ///  Створює об'єкт кооординатних вісей
         /// </summary>
@@ -58,7 +70,9 @@ namespace CooridnateGrid.DrawnObjects
             CellAmountOnOrdinateAxe = cellAmountOnOrdinateAxe;
             MyColor = color;
         }
+        #endregion
 
+        #region Methods
         private Vector3 Point(int x, int y) => TransformMe(new Vector3(x,  y, 1));
         private Vector3 Point(double x, double y) => TransformMe(new Vector3((float)x, (float)y,1));
         private IEnumerable<Vector3> GetAbscissaLine(int y)
@@ -77,62 +91,63 @@ namespace CooridnateGrid.DrawnObjects
         }
         protected override IEnumerable<IEnumerable<Vector3>> ContourPoints()
         {
-            for(var x = -CellAmountOnAbscissaAxe /2; x <= CellAmountOnAbscissaAxe/2; x++)
+            throw new NotImplementedException("Use IDrawingSelf, to draw this figure");
+        }
+        private void DrawOrdinateAndAbscissaGrid(CoordinatePlane.MyPlane pl)
+        {
+            for (var x = -CellAmountOnAbscissaAxe / 2; x <= CellAmountOnAbscissaAxe / 2; x++)
             {
-                if(x != 0)
-                    yield return GetOrdinateLine(x);
+                foreach (var points in GetOrdinateLine(x).Select(point => pl.ToBitmapCoord(point))
+                                                         .LineCreator())
+                {
+                    System.Windows.Media.Color color = x != 0 ? MyColor : System.Windows.Media.Color.FromRgb(0, 0, 255);
+                    pl.WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
+                                   (int)points.Item2.X, (int)points.Item2.Y, color);
+                }
             }
 
             for (var y = -CellAmountOnOrdinateAxe / 2; y <= CellAmountOnOrdinateAxe / 2; y++)
             {
-                if (y != 0)
-                    yield return GetAbscissaLine(y);
-            }
-        }
-        private void DrawOrdinateAndAbscissaAxes(CoordinatePlane.MyPlane pl)
-        {
-            pl.DrawObj(this);
-
-            foreach (var points in GetAbscissaLine(0).Select(point => pl.ToBitmapCoord(TransformMe(point)))
-                                              .LineCreator())
-            {
-                pl.WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
-                           (int)points.Item2.X, (int)points.Item2.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
-            }
-
-            foreach (var points in GetOrdinateLine(0).Select(point => pl.ToBitmapCoord(TransformMe(point)))
-                                              .LineCreator())
-            {
-                pl.WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
-                           (int)points.Item2.X, (int)points.Item2.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
+                foreach (var points in GetAbscissaLine(y).Select(point => pl.ToBitmapCoord(point))
+                                                         .LineCreator())
+                {
+                    System.Windows.Media.Color color = y != 0 ? MyColor : System.Windows.Media.Color.FromRgb(0, 0, 255);
+                    pl.WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
+                                   (int)points.Item2.X, (int)points.Item2.Y, color);
+                }
             }
             DrawElements(pl);
         }
         private void DrawElements(CoordinatePlane.MyPlane pl)
         {
-            var abscissaEnd = pl.ToBitmapCoord(TransformMe(Point(CellAmountOnAbscissaAxe/2, 0)));
-            var ordinateEnd = pl.ToBitmapCoord(TransformMe(Point(0, CellAmountOnOrdinateAxe/2)));
+            var abscissaEnd = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe/2, 0));
+            var ordinateEnd = pl.ToBitmapCoord(Point(0, CellAmountOnOrdinateAxe/2));
             var k = 0.6;
             var k1 = 0.4;
-            var abscissaUp = pl.ToBitmapCoord(TransformMe(Point(CellAmountOnAbscissaAxe / 2 -k, k1)));
-            var abscissaDown = pl.ToBitmapCoord(TransformMe(Point(CellAmountOnAbscissaAxe / 2 -k, -k1)));
-            var ordinateRight = pl.ToBitmapCoord(TransformMe(Point(k1, CellAmountOnOrdinateAxe / 2 - k)));
-            var ordinateLeft = pl.ToBitmapCoord(TransformMe(Point(-k1, CellAmountOnOrdinateAxe / 2 - k)));
-            var temp1 = pl.ToBitmapCoord(TransformMe(Point(1,0.3)));
-            var temp2 = pl.ToBitmapCoord(TransformMe(Point(1, -0.3)));
+            var abscissaArrowUp = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 -k, k1));
+            var abscissaArrowDown = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 -k, -k1));
+            var ordinateArrowRight = pl.ToBitmapCoord(Point(k1, CellAmountOnOrdinateAxe / 2 - k));
+            var ordinateArrowLeft = pl.ToBitmapCoord(Point(-k1, CellAmountOnOrdinateAxe / 2 - k));
+            var temp1 = pl.ToBitmapCoord(Point(1,0.3));
+            var temp2 = pl.ToBitmapCoord(Point(1, -0.3));
+            var temp3 = pl.ToBitmapCoord(Point(0.3,1));
+            var temp4 = pl.ToBitmapCoord(Point(-0.3,1));
 
-            pl.WrBitmap.DrawLine((int)abscissaEnd.X, (int)abscissaEnd.Y, (int)abscissaUp.X,
-                (int)abscissaUp.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
-            pl.WrBitmap.DrawLine((int)abscissaEnd.X, (int)abscissaEnd.Y, (int)abscissaDown.X,
-              (int)abscissaDown.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
+            pl.WrBitmap.DrawLine((int)abscissaEnd.X, (int)abscissaEnd.Y, (int)abscissaArrowUp.X,
+                (int)abscissaArrowUp.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
+            pl.WrBitmap.DrawLine((int)abscissaEnd.X, (int)abscissaEnd.Y, (int)abscissaArrowDown.X,
+              (int)abscissaArrowDown.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
            
-            pl.WrBitmap.DrawLine((int)ordinateEnd.X, (int)ordinateEnd.Y, (int)ordinateRight.X,
-               (int)ordinateRight.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
-            pl.WrBitmap.DrawLine((int)ordinateEnd.X, (int)ordinateEnd.Y, (int)ordinateLeft.X,
-              (int)ordinateLeft.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
+            pl.WrBitmap.DrawLine((int)ordinateEnd.X, (int)ordinateEnd.Y, (int)ordinateArrowRight.X,
+               (int)ordinateArrowRight.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
+            pl.WrBitmap.DrawLine((int)ordinateEnd.X, (int)ordinateEnd.Y, (int)ordinateArrowLeft.X,
+              (int)ordinateArrowLeft.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
 
             pl.WrBitmap.DrawLine((int)temp1.X, (int)temp1.Y, (int)temp2.X,
                (int)temp2.Y, System.Windows.Media.Color.FromRgb(255, 0, 0));
+
+            pl.WrBitmap.DrawLine((int)temp3.X, (int)temp3.Y, (int)temp4.X,
+              (int)temp4.Y, System.Windows.Media.Color.FromRgb(255, 0, 0));
         }
 
         private void DrawText(CoordinatePlane.MyPlane pl)
@@ -143,25 +158,30 @@ namespace CooridnateGrid.DrawnObjects
             var stride = wr.BackBufferStride;
             var pixelPtr = wr.BackBuffer;
             var bm2 = new Bitmap(w, h, stride, CoordinatePlane.MyPlane.ConvertPixelFormat(wr.Format), pixelPtr);
-            var xPoint = pl.ToBitmapCoord(TransformMe(Point(CellAmountOnAbscissaAxe / 2 - 1.5, 0 - 0.5)));
-            var yPoint = pl.ToBitmapCoord(TransformMe(Point(0 + 0.5, CellAmountOnOrdinateAxe / 2 - 0.5)));
-            var zeroPoint = pl.ToBitmapCoord(TransformMe(Point(0 + 0.1, 0 + 0.1)));
-            var onePoint = pl.ToBitmapCoord(TransformMe(Point(1 + 0.1, 0 + 0.1)));
+            var xPoint = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 - 1.5, 0 - 0.5));
+            var yPoint = pl.ToBitmapCoord(Point(0 + 0.5, CellAmountOnOrdinateAxe / 2 - 0.5));
+            var zeroPoint = pl.ToBitmapCoord(Point(0 + 0.1, 0 + 0.1));
+            var onePointX = pl.ToBitmapCoord(Point(1 + 0.1, 0 + 0.1));
+            var onePointY = pl.ToBitmapCoord(Point(0 + 0.1, 1 + 0.1));
             wr.Lock();
             using (var g = Graphics.FromImage(bm2))
             {
                 g.DrawString("X", new Font("Times New Roman", 12), System.Drawing.Brushes.Blue, xPoint.X, xPoint.Y);
                 g.DrawString("Y", new Font("Times New Roman", 12), System.Drawing.Brushes.Blue, yPoint.X, yPoint.Y);
                 g.DrawString("0", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, zeroPoint.X, zeroPoint.Y);
-                g.DrawString("1", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, onePoint.X, onePoint.Y);
+                g.DrawString("1", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, onePointX.X, onePointX.Y);
+                g.DrawString("1", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, onePointY.X, onePointY.Y);
             }
             wr.AddDirtyRect(new Int32Rect(0, 0, 200, 100));
             wr.Unlock();
         }
         public void Draw(CoordinatePlane.MyPlane pl)
         {
-            DrawOrdinateAndAbscissaAxes(pl);
+            CellAmountOnAbscissaAxe = pl.WrBitmap.PixelWidth / pl.StepInPixels;
+            CellAmountOnOrdinateAxe = pl.WrBitmap.PixelHeight / pl.StepInPixels;
+            DrawOrdinateAndAbscissaGrid(pl);
             DrawText(pl);
         }
+        #endregion
     }
 }
