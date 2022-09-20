@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CooridnateGrid.ExtensionsClasses;
+using System.Drawing;
 
 namespace CooridnateGrid.CoordinatePlane
 {
@@ -22,8 +23,8 @@ namespace CooridnateGrid.CoordinatePlane
         #region Propreties
         public Func<Vector3, Vector3> Transform { get; set; } = v => v;
         public List<DrawnObject> Objects { get; }
-        public  WriteableBitmap WrBitmap { get; set; }
-       
+        public int BitmapWidth { get; set; }
+        public int BitmapHeight { get; set; }
         public int StepInPixels
         {
 
@@ -31,8 +32,11 @@ namespace CooridnateGrid.CoordinatePlane
 
             set
                 {
-                _stepInPixels = value;
-                OnPropertyChanged("StepInPixels");
+                    if (value >= 10 && value <= 80)
+                    {
+                        _stepInPixels = value;
+                        OnPropertyChanged("StepInPixels");
+                    }
                 }
             
         }
@@ -44,7 +48,8 @@ namespace CooridnateGrid.CoordinatePlane
         public MyPlane(int bitmapWidth, int bitmapHeight, int stepInPixels)
         {
             Objects = new List<DrawnObject>();
-            WrBitmap = BitmapFactory.New(bitmapWidth, bitmapHeight);
+            BitmapWidth = bitmapWidth;
+            BitmapHeight = bitmapHeight;
             StepInPixels = stepInPixels;
         }
         #endregion
@@ -63,7 +68,7 @@ namespace CooridnateGrid.CoordinatePlane
             return new System.Drawing.Imaging.PixelFormat();
         }
 
-        internal void DrawObj(DrawnObject obj)
+        internal void DrawObj(DrawnObject obj, Graphics g)
         {
             var lineBuilder = new LinkedList<Vector3>();
             foreach (var contour in obj.GetContourPoints())
@@ -71,12 +76,19 @@ namespace CooridnateGrid.CoordinatePlane
                 foreach (var points in contour.Select(point => ToBitmapCoord(point))
                                               .LineCreator())
                 {
-                    WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
-                        (int)points.Item2.X, (int)points.Item2.Y, obj.MyColor);
+                    DrawLine(g, points, obj.MyColor);
                 }
             }
         }
-
+        internal void DrawLine(Graphics g, Tuple<Vector3,Vector3> points, System.Windows.Media.Color Color)
+        {
+            System.Drawing.Color color =
+                        System.Drawing.Color.FromArgb(Color.A, Color.R, Color.G, Color.B);
+            System.Drawing.Pen pen = new System.Drawing.Pen(new SolidBrush(color));
+            Point start = new Point((int)points.Item1.X, (int)points.Item1.Y);
+            Point end = new Point((int)points.Item2.X, (int)points.Item2.Y);
+            g.DrawLine(pen, start, end);
+        }
         public void AddObject(DrawnObject obj)
         {
             Objects.Add(obj);
@@ -87,30 +99,31 @@ namespace CooridnateGrid.CoordinatePlane
             Objects.Remove(obj);
         }
      
-        public void Draw()
+        public void Draw(Graphics g)
         {
-            WrBitmap.Clear();
-            foreach (var obj in Objects)
-            {
-                if (obj != null)
+                g.Clear(System.Drawing.Color.White);
+                foreach (var obj in Objects)
                 {
-                    if (obj is IDrawingSelf)
+                    if (obj != null)
                     {
-                        ((IDrawingSelf)obj).Draw(this);
-                    }
-                    else
-                    {
-                        DrawObj(obj);
+                        if (obj is IDrawingSelf)
+                        {
+                            ((IDrawingSelf)obj).Draw(this, g);
+                        }
+                        else
+                        {
+                            DrawObj(obj, g);
+                        }
                     }
                 }
-          }
+            
         }
 
         public Vector3 ToBitmapCoord(Vector3 planeCoord)
         {
             var transformed = Transform(planeCoord);
-            return new Vector3((float)(transformed.X * StepInPixels + WrBitmap.Width / 2),
-                               (float)(-(transformed.Y * StepInPixels) + WrBitmap.Height / 2),
+            return new Vector3((float)(transformed.X * StepInPixels + BitmapWidth / 2),
+                               (float)(-(transformed.Y * StepInPixels) + BitmapHeight / 2),
                                1);
         }
 
