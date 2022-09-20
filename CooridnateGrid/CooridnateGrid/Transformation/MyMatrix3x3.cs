@@ -9,9 +9,11 @@ namespace CooridnateGrid.Transformation
 {
     public struct MyMatrix3x3
     {
+        #region Variables
         public readonly float[,] matrix = new float[3,3];
+        #endregion
 
-
+        #region Constructors
         public MyMatrix3x3(float[,] m)
         {
             for (var i = 0; i < 3; i++)
@@ -35,6 +37,9 @@ namespace CooridnateGrid.Transformation
                 }
             }
         }
+        #endregion
+
+        #region Operators
         public float this[int i,int j]
         {
             get
@@ -59,5 +64,6 @@ namespace CooridnateGrid.Transformation
             z /= z;
             return new Vector3(x, y, z);
         }
+        #endregion
     }
 }

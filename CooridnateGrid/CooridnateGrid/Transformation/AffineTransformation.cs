@@ -9,10 +9,13 @@ namespace CooridnateGrid.Transformation
 {
     public class AffineTransformation : Transformation
     {
+        #region Variables
         private Vector3 _r0 = new Vector3(0,0,1);
         private Vector3 _rx = new Vector3(1,0,1);
         private Vector3 _ry = new Vector3(0,1,1);
+        #endregion
 
+        #region Propreties
         public Vector3 R0
         {
             get { return _r0; }
@@ -40,6 +43,12 @@ namespace CooridnateGrid.Transformation
             }
         }
 
-        public override Func<Vector3, Vector3> Transform => v => R0 + (Rx * v.X) + (Ry * v.Y);
+        #endregion
+
+        public override Func<Vector3, Vector3> Transform => v =>
+        {
+            var temp = R0 + (Rx * v.X) + (Ry * v.Y);
+            return new Vector3(temp.X, temp.Y, 1);
+        };
     }
 }
