@@ -43,8 +43,8 @@ namespace CooridnateGrid.DrawnObjects
 
         public CoordinateAxis(MyPlane pl)
         {
-            CellAmountOnAbscissaAxe = pl.WrBitmap.PixelWidth / pl.StepInPixels;
-            CellAmountOnOrdinateAxe = pl.WrBitmap.PixelHeight / pl.StepInPixels;
+            CellAmountOnAbscissaAxe = pl.BitmapWidth / pl.StepInPixels;
+            CellAmountOnOrdinateAxe = pl.BitmapHeight / pl.StepInPixels;
             MyColor = System.Windows.Media.Color.FromRgb(128, 128, 128);
         }
         /// <summary>
@@ -93,7 +93,7 @@ namespace CooridnateGrid.DrawnObjects
         {
             throw new NotImplementedException("Use IDrawingSelf, to draw this figure");
         }
-        private void DrawOrdinateAndAbscissaGrid(CoordinatePlane.MyPlane pl)
+        private void DrawOrdinateAndAbscissaGrid(CoordinatePlane.MyPlane pl, Graphics g)
         {
             for (var x = -CellAmountOnAbscissaAxe / 2; x <= CellAmountOnAbscissaAxe / 2; x++)
             {
@@ -101,8 +101,7 @@ namespace CooridnateGrid.DrawnObjects
                                                          .LineCreator())
                 {
                     System.Windows.Media.Color color = x != 0 ? MyColor : System.Windows.Media.Color.FromRgb(0, 0, 255);
-                    pl.WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
-                                   (int)points.Item2.X, (int)points.Item2.Y, color);
+                    pl.DrawLine(g, points, color);
                 }
             }
 
@@ -112,13 +111,12 @@ namespace CooridnateGrid.DrawnObjects
                                                          .LineCreator())
                 {
                     System.Windows.Media.Color color = y != 0 ? MyColor : System.Windows.Media.Color.FromRgb(0, 0, 255);
-                    pl.WrBitmap.DrawLine((int)points.Item1.X, (int)points.Item1.Y,
-                                   (int)points.Item2.X, (int)points.Item2.Y, color);
+                    pl.DrawLine(g, points, color);
                 }
             }
-            DrawElements(pl);
+            DrawElements(pl, g);
         }
-        private void DrawElements(CoordinatePlane.MyPlane pl)
+        private void DrawElements(CoordinatePlane.MyPlane pl, Graphics g)
         {
             var abscissaEnd = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe/2, 0));
             var ordinateEnd = pl.ToBitmapCoord(Point(0, CellAmountOnOrdinateAxe/2));
@@ -132,55 +130,35 @@ namespace CooridnateGrid.DrawnObjects
             var temp2 = pl.ToBitmapCoord(Point(1, -0.3));
             var temp3 = pl.ToBitmapCoord(Point(0.3,1));
             var temp4 = pl.ToBitmapCoord(Point(-0.3,1));
-
-            pl.WrBitmap.DrawLine((int)abscissaEnd.X, (int)abscissaEnd.Y, (int)abscissaArrowUp.X,
-                (int)abscissaArrowUp.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
-            pl.WrBitmap.DrawLine((int)abscissaEnd.X, (int)abscissaEnd.Y, (int)abscissaArrowDown.X,
-              (int)abscissaArrowDown.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
-           
-            pl.WrBitmap.DrawLine((int)ordinateEnd.X, (int)ordinateEnd.Y, (int)ordinateArrowRight.X,
-               (int)ordinateArrowRight.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
-            pl.WrBitmap.DrawLine((int)ordinateEnd.X, (int)ordinateEnd.Y, (int)ordinateArrowLeft.X,
-              (int)ordinateArrowLeft.Y, System.Windows.Media.Color.FromRgb(0, 0, 255));
-
-            pl.WrBitmap.DrawLine((int)temp1.X, (int)temp1.Y, (int)temp2.X,
-               (int)temp2.Y, System.Windows.Media.Color.FromRgb(255, 0, 0));
-
-            pl.WrBitmap.DrawLine((int)temp3.X, (int)temp3.Y, (int)temp4.X,
-              (int)temp4.Y, System.Windows.Media.Color.FromRgb(255, 0, 0));
+            var color1 = System.Windows.Media.Color.FromRgb(0, 0, 255);
+            var color2 = System.Windows.Media.Color.FromRgb(255, 0, 0);
+            pl.DrawLine(g, Tuple.Create(abscissaEnd, abscissaArrowUp), color1);
+            pl.DrawLine(g, Tuple.Create(abscissaEnd, abscissaArrowDown), color1);
+            pl.DrawLine(g, Tuple.Create(ordinateEnd, ordinateArrowRight), color1);
+            pl.DrawLine(g, Tuple.Create(ordinateEnd, ordinateArrowLeft), color1);
+            pl.DrawLine(g, Tuple.Create(temp1, temp2), color2);
+            pl.DrawLine(g, Tuple.Create(temp3, temp4), color2);
         }
 
-        private void DrawText(CoordinatePlane.MyPlane pl)
+        private void DrawText(CoordinatePlane.MyPlane pl, Graphics g)
         {
-            var wr = pl.WrBitmap;
-            var w = wr.PixelWidth;
-            var h = wr.PixelHeight;
-            var stride = wr.BackBufferStride;
-            var pixelPtr = wr.BackBuffer;
-            var bm2 = new Bitmap(w, h, stride, CoordinatePlane.MyPlane.ConvertPixelFormat(wr.Format), pixelPtr);
             var xPoint = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 - 1.5, 0 - 0.5));
             var yPoint = pl.ToBitmapCoord(Point(0 + 0.5, CellAmountOnOrdinateAxe / 2 - 0.5));
             var zeroPoint = pl.ToBitmapCoord(Point(0 + 0.1, 0 + 0.1));
             var onePointX = pl.ToBitmapCoord(Point(1 + 0.1, 0 + 0.1));
             var onePointY = pl.ToBitmapCoord(Point(0 + 0.1, 1 + 0.1));
-            wr.Lock();
-            using (var g = Graphics.FromImage(bm2))
-            {
-                g.DrawString("X", new Font("Times New Roman", 12), System.Drawing.Brushes.Blue, xPoint.X, xPoint.Y);
-                g.DrawString("Y", new Font("Times New Roman", 12), System.Drawing.Brushes.Blue, yPoint.X, yPoint.Y);
-                g.DrawString("0", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, zeroPoint.X, zeroPoint.Y);
-                g.DrawString("1", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, onePointX.X, onePointX.Y);
-                g.DrawString("1", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, onePointY.X, onePointY.Y);
-            }
-            wr.AddDirtyRect(new Int32Rect(0, 0, 200, 100));
-            wr.Unlock();
+            g.DrawString("X", new Font("Times New Roman", 12), System.Drawing.Brushes.Blue, xPoint.X, xPoint.Y);
+            g.DrawString("Y", new Font("Times New Roman", 12), System.Drawing.Brushes.Blue, yPoint.X, yPoint.Y);
+            g.DrawString("0", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, zeroPoint.X, zeroPoint.Y);
+            g.DrawString("1", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, onePointX.X, onePointX.Y);
+            g.DrawString("1", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, onePointY.X, onePointY.Y);           
         }
-        public void Draw(CoordinatePlane.MyPlane pl)
+        public void Draw(CoordinatePlane.MyPlane pl, Graphics g)
         {
-            CellAmountOnAbscissaAxe = pl.WrBitmap.PixelWidth / pl.StepInPixels;
-            CellAmountOnOrdinateAxe = pl.WrBitmap.PixelHeight / pl.StepInPixels;
-            DrawOrdinateAndAbscissaGrid(pl);
-            DrawText(pl);
+            CellAmountOnAbscissaAxe = pl.BitmapWidth / pl.StepInPixels;
+            CellAmountOnOrdinateAxe = pl.BitmapHeight / pl.StepInPixels;
+            DrawOrdinateAndAbscissaGrid(pl, g);
+            DrawText(pl,g);
         }
         #endregion
     }
