@@ -69,7 +69,7 @@ namespace CooridnateGrid.DrawnObjects
 
         #endregion
 
-
+        #region Constructors
         public Circle()
         {
             Center = new Vector3(0,0,1);
@@ -94,6 +94,9 @@ namespace CooridnateGrid.DrawnObjects
             EndBreakPoint = endBreakPoint;
             MyColor = color;
         }
+        #endregion
+
+        #region Methods
         private void MoveBreakPoint(Vector3 newCenter, float newR)
         {
             var startAngle = StartBreakPoint.Angle();
@@ -117,5 +120,6 @@ namespace CooridnateGrid.DrawnObjects
         {
             yield return GetCirclePoints();
         }
+        #endregion
     }
 }

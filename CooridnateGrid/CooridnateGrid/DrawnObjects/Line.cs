@@ -38,6 +38,7 @@ namespace CooridnateGrid.DrawnObjects
         }
         #endregion
 
+        #region Constructors
         public Line(Vector3 start, Vector3 end, Color color)
         {
             Start = start;
@@ -49,7 +50,9 @@ namespace CooridnateGrid.DrawnObjects
             Start = start;
             End = GetLineEndPoint(start, length,angle);
         }
+        #endregion
 
+        #region Methods
         internal IEnumerable<Vector3> GetLinePoint()
         {
             yield return Start;
@@ -66,5 +69,6 @@ namespace CooridnateGrid.DrawnObjects
             var tmp = startPoint + (new Vector3(length, 0, 0)).Rotate(angle);
             return new Vector3(tmp.X, tmp.Y, 1);
         }
+        #endregion
     }
 }

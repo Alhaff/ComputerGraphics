@@ -16,22 +16,14 @@ namespace CooridnateGrid.DrawnObjects
     /// </summary>
     public abstract class DrawnObject : INotifyPropertyChanged
     {
+        #region Variables
         private Color _myColor;
-        /// <summary>
-        /// Повертає перелік точок контуру рисунку. Так як об'єкт може мати не суцільний контур 
-        /// повертає його у вигляді переліку точок які можна з'єднати нерозривною лінією.
-        /// </summary>
-        /// <returns>type - IEnumerable<IEnumerable<Vector3>></returns>
-        protected abstract IEnumerable<IEnumerable<Vector3>> ContourPoints();
+        #endregion
+
+        #region Propreties
         /// <summary>
         /// Колір лінії контуру об'єкта
         /// </summary>
-        public IEnumerable<IEnumerable<Vector3>> GetContourPoints()
-        {
-            foreach (var countour in ContourPoints())
-                yield return countour.Select(point => TransformMe(point));
-        }
-
         public Color MyColor
         {
             get { return _myColor; }
@@ -41,16 +33,37 @@ namespace CooridnateGrid.DrawnObjects
                 OnPropertyChanged("MyColor");
             }
         }
+
         /// <summary>
-        /// Функція, що буду застосована, до всіх точок об'єкту
+        /// Функція, що буде застосована, до всіх точок об'єкту, які поврене метод ContourPoints()
         /// </summary>
         public Func<Vector3, Vector3> TransformMe { get; set; } = v => v;
+        #endregion
 
+        #region Events
         public event PropertyChangedEventHandler? PropertyChanged;
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Повертає перелік точок контуру рисунку. Так як об'єкт може мати не суцільний контур 
+        /// повертає його у вигляді переліку точок які можна з'єднати нерозривною лінією.
+        /// </summary>
+        /// <returns>type - IEnumerable<IEnumerable<Vector3>></returns>
+        protected abstract IEnumerable<IEnumerable<Vector3>> ContourPoints();
+
+        public IEnumerable<IEnumerable<Vector3>> GetContourPoints()
+        {
+            foreach (var countour in ContourPoints())
+                yield return countour.Select(point => TransformMe(point));
+        }
+
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
+
+        #endregion
     }
 }
