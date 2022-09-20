@@ -19,6 +19,7 @@ using CooridnateGrid.ConverterClasses;
 using System.Numerics;
 using System.Threading;
 using CooridnateGrid.Transformation;
+using System.Drawing;
 
 namespace CooridnateGrid
 {
@@ -27,6 +28,7 @@ namespace CooridnateGrid
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Propreties
         private int BitmapWidth { get; set; }
         private int BitmapHeight { get; set; }
         public MyPlane Pl { get; set; }
@@ -39,8 +41,12 @@ namespace CooridnateGrid
         private TransformationConnector Transformation { get; set; }
         private AffineTransformation Athene { get; set; }
         private ProjectiveTransformation Project { get; set; }
-        private bool reverse = false;
-        bool IsPressed = false;
+
+        private bool Reverse { get; set; } = false;
+
+        bool IsPressed { get; set; } = false;
+        #endregion
+
         public MainWindow()
         {
             InitializeComponent();
@@ -65,24 +71,21 @@ namespace CooridnateGrid
             CompositionTarget.Rendering += CompositionTarget_Rendering;
         }
 
-      
         private void CompositionTarget_Rendering(object? sender, EventArgs e)
         {
-           
             Pl.Draw();
-            if (IsPressed)
+            if(IsPressed)
             {
                 AutoRotate();
             }
-           
         }
 
         private void AutoRotate()
         {
              if (Pl.Transform.GetInvocationList().Contains(Transformation))
             {
-                Thread.Sleep(100);
-                if (!reverse)
+              
+                if (!Reverse)
                 {
                     Project.Rx = Project.Rx + new Vector3(10, 0, 0);
                 }
@@ -92,11 +95,11 @@ namespace CooridnateGrid
                 }
                 if (Project.Rx.X >= 1000)
                 {
-                    reverse = true;
+                    Reverse = true;
                 }
                 else if (Project.Rx.X <= -1000)
                 {
-                    reverse = false;
+                    Reverse = false;
 
                 }
             }
@@ -104,13 +107,21 @@ namespace CooridnateGrid
         private void CreatePlane()
         {
             Pl = new MyPlane(BitmapWidth, BitmapHeight, 20);
-            Axes = new CoordinateAxis(BitmapWidth / Pl.StepInPixels, BitmapHeight / Pl.StepInPixels);
+            Binding bind = new Binding();
+            bind.Source = Pl;
+            bind.Path = new PropertyPath("StepInPixels");
+            StepInPixel.SetBinding(TextBox.TextProperty, bind);
+            Axes = new CoordinateAxis(Pl);
             MyDrawing = ((Lab1Drawing)this.Resources["mainObj"]);
+           // var temp = new CoordinateAxis(BitmapWidth / Pl.StepInPixels, BitmapHeight / Pl.StepInPixels);
             MyDrawing.TransformMe += LinearTransformation;
-            Pl.Transform += Athene;
+            // temp.TransformMe += Athene;
+            //temp.MyColor = Color.FromRgb(255, 0, 0);
             //Pl.Transform += Transformation;
+            Pl.Transform += Athene;
             Pl.AddObject(Axes);
             Pl.AddObject(MyDrawing);
+            //Pl.AddObject(temp);
         }
 
         private void ToDafaultValue_Click(object sender, RoutedEventArgs e)
