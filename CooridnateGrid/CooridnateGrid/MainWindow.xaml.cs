@@ -20,6 +20,7 @@ using System.Numerics;
 using System.Threading;
 using CooridnateGrid.Transformation;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace CooridnateGrid
 {
@@ -31,6 +32,7 @@ namespace CooridnateGrid
         #region Propreties
         private int BitmapWidth { get; set; }
         private int BitmapHeight { get; set; }
+        private WriteableBitmap WR { get; set; }
         public MyPlane Pl { get; set; }
         private CoordinateAxis Axes { get; set; }
         private Lab1Drawing MyDrawing { get; set; }
@@ -41,6 +43,18 @@ namespace CooridnateGrid
         private TransformationConnector Transformation { get; set; }
         private AffineTransformation Athene { get; set; }
         private ProjectiveTransformation Project { get; set; }
+
+        public Stopwatch Timer { get; set; } = new Stopwatch();
+
+        private TimeSpan PreviousTick { get; set; }
+
+        public float ElapsedMillisecondsSinceLastTick
+        {
+            get
+            {
+                return (float)(Timer.Elapsed - PreviousTick).TotalMilliseconds;
+            }
+        }
 
         private bool Reverse { get; set; } = false;
 
@@ -66,19 +80,44 @@ namespace CooridnateGrid
             BitmapWidth = (int)this.ViewPortContainer.ActualWidth;
             BitmapHeight = (int)this.ViewPortContainer.ActualHeight;
             CreatePlane();
-            ViewPort.Source = Pl.WrBitmap;
-            Pl.Draw();
+            ViewPort.Source = WR;
+            Timer.Start();
+            PreviousTick = Timer.Elapsed;
+            Draw();
             CompositionTarget.Rendering += CompositionTarget_Rendering;
         }
-
-        private void CompositionTarget_Rendering(object? sender, EventArgs e)
+        private void Draw()
         {
-            Pl.Draw();
-            if(IsPressed)
+            var wr = WR;
+            var w = wr.PixelWidth;
+            var h = wr.PixelHeight;
+            var stride = wr.BackBufferStride;
+            var pixelPtr = wr.BackBuffer;
+            var bm2 = new Bitmap(w, h, stride, CoordinatePlane.MyPlane.ConvertPixelFormat(wr.Format), pixelPtr);
+            wr.Lock();
+            using (var g = Graphics.FromImage(bm2))
+            {
+                Pl.Draw(g);
+            }
+            wr.AddDirtyRect(new Int32Rect(0, 0, BitmapWidth, BitmapHeight));
+            wr.Unlock();
+           
+            if (IsPressed)
             {
                 AutoRotate();
             }
+            
         }
+
+        private  void CompositionTarget_Rendering(object? sender, EventArgs e)
+        {
+            if (ElapsedMillisecondsSinceLastTick >= 20)
+            {
+                Draw();
+                PreviousTick = Timer.Elapsed;
+            }
+        }
+   
 
         private void AutoRotate()
         {
@@ -107,6 +146,7 @@ namespace CooridnateGrid
         private void CreatePlane()
         {
             Pl = new MyPlane(BitmapWidth, BitmapHeight, 20);
+            WR = BitmapFactory.New(BitmapWidth, BitmapHeight);
             Binding bind = new Binding();
             bind.Source = Pl;
             bind.Path = new PropertyPath("StepInPixels");
