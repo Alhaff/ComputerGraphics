@@ -11,6 +11,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
+        ResizeMode="NoResize"
         Title="MainWindow">
     <Window.Resources>
         <converter:VectorToStringConverter x:Key="VectorConverter"/>
@@ -38,6 +39,7 @@
             <StackPanel Orientation="Horizontal" Margin="10 10 10 0" HorizontalAlignment="Center">
                 <TextBlock Text="1кл.  - " FontSize="14"  TextAlignment="Center"></TextBlock>
                 <custom:SubmitTextBox x:Name="StepInPixel" Width="40" FontSize="14"  TextAlignment="Center"></custom:SubmitTextBox>
+                <TextBlock Text="px"  FontSize="14"></TextBlock>
             </StackPanel>
             <Button Margin="20 10 20 10" x:Name="ToDafaultValue" Click="ToDafaultValue_Click">До початкових розмірів</Button>
             <TextBlock Text="Перетворення" FontSize="20" Margin="10" TextAlignment="Center"></TextBlock>
