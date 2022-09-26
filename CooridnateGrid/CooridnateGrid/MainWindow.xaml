@@ -11,14 +11,13 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        ResizeMode="NoResize"
         Title="MainWindow">
     <Window.Resources>
         <converter:VectorToStringConverter x:Key="VectorConverter"/>
         <converter:Vector3ToStringConvertor x:Key="Vector3Converter"/>
         <drawObj:Lab1Drawing x:Key="mainObj"/>
         <transform:MoveTransformation x:Key="move"/>
-        <transform:AffineTransformation x:Key="athene"/>
+        <transform:AffineTransformation x:Key="affine"/>
         <transform:RotateTransformation x:Key="rotate"/>
         <transform:ProjectiveTransformation x:Key="project"/>
     </Window.Resources>
@@ -46,15 +45,15 @@
             <TabControl  DataContext="{DynamicResource mainObj}">
                 <TabItem Header="Лінійні">
                     <StackPanel Orientation="Vertical">
-                        <StackPanel Margin="10 10 10 0" DataContext="{Binding InternalCircle}" Orientation="Horizontal">
+                        <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
                             <TextBlock Text="r = " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
                             <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
-                            Text="{Binding R, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                            Text="{Binding InR, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                         </StackPanel>
-                        <StackPanel Margin="10 0 10 0" DataContext="{Binding ExternalCircle}" Orientation="Horizontal">
+                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
                             <TextBlock Text="R =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
                             <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
-                            Text="{Binding R, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                            Text="{Binding ExtR, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                         </StackPanel>
                         <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
                             <TextBlock Text="w =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
@@ -72,9 +71,9 @@
                             Text="{Binding InternalHeight, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                         </StackPanel>
                         <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
-                            <TextBlock Text="h =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <TextBlock Text="H =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
                             <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
-                            Text="{Binding ExternalHeigth, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                            Text="{Binding ExternalHeight, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                         </StackPanel>
                         <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
                             <TextBlock Text="bW =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
@@ -111,7 +110,7 @@
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Афінні">
-                    <StackPanel Orientation="Vertical" DataContext="{DynamicResource athene}">
+                    <StackPanel Orientation="Vertical" DataContext="{DynamicResource affine}">
                         <StackPanel Orientation="Horizontal"  Margin="10">
                         <TextBlock Text="R0(x,y):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
                         <custom:SubmitTextBox Width="60" TextAlignment="Center" Margin="5" 
@@ -150,9 +149,8 @@
                             <Button x:Name="CancelProjectionTransformation" Content="Скасувати" Margin="5"
                                     Click="CancelProjectionTransformation_Click"></Button>
                             <Button x:Name="ApplyProjectionTransformation" Content="Застосувати" Margin="5"
-                                    Click="ApplyProjectionTransformation_Click"> </Button>
+                                    Click="ApplyProjectionTransformation_Click"></Button>
                         </StackPanel>
-                        <Button x:Name="RotateButton" Content="Обертати" Margin="15 0 15 15" Click="RotateButton_Click"></Button>
                     </StackPanel>
                 </TabItem>
             </TabControl>
@@ -160,7 +158,8 @@
         </StackPanel>
         <Border BorderBrush="Green" BorderThickness="4" Grid.Row="1" Grid.Column="2">
             <Grid x:Name="ViewPortContainer">
-                <Image x:Name="ViewPort" Loaded="ViewPort_Loaded"></Image>
+                <Image x:Name="ViewPort" Loaded="ViewPort_Loaded" KeyDown="ViewPort_KeyDown" MouseWheel="ViewPort_MouseWheel" 
+                       MouseEnter="ViewPort_MouseEnter" Focusable="True"></Image>
             </Grid>
         </Border>
     </Grid>
