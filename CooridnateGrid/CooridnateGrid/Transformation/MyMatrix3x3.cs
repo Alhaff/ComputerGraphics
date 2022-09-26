@@ -54,15 +54,36 @@ namespace CooridnateGrid.Transformation
                 throw new IndexOutOfRangeException();
             }
         }
-        public static Vector3 operator*(Vector3 vect, MyMatrix3x3 matrix)
+        public static Vector3 operator*(Vector3 vect, MyMatrix3x3 Matrix)
         {
-            float x = vect.X * matrix[0,0] + vect.Y * matrix[1,0] + vect.Z * matrix[2,0];
-            float y = vect.X * matrix[0, 1] + vect.Y * matrix[1, 1] + vect.Z * matrix[2, 1];
-            float z = vect.X * matrix[0, 2] + vect.Y * matrix[1, 2] + vect.Z * matrix[2, 2];
+            float x = vect.X * Matrix[0,0] + vect.Y * Matrix[1,0] + vect.Z * Matrix[2,0];
+            float y = vect.X * Matrix[0, 1] + vect.Y * Matrix[1, 1] + vect.Z * Matrix[2, 1];
+            float z = vect.X * Matrix[0, 2] + vect.Y * Matrix[1, 2] + vect.Z * Matrix[2, 2];
             x /= z;
             y /= z;
             z /= z;
-            return new Vector3(x, y, z);
+            return new Vector3(x, y, 1);
+        }
+
+        public static MyMatrix3x3 operator *(int num, MyMatrix3x3 Matrix)
+        {
+            return new MyMatrix3x3
+                (
+                     num * Matrix[0, 0], num * Matrix[0, 1],  num * Matrix[0, 2],
+                     num * Matrix[1, 0], num * Matrix[1, 1], num * Matrix[1, 2],
+                     num * Matrix[2, 0], num * Matrix[2, 1], num * Matrix[2, 2]
+
+                );
+        }
+        public static MyMatrix3x3 operator *(MyMatrix3x3 Matrix, int num)
+        {
+            return new MyMatrix3x3
+                (
+                     num * Matrix[0, 0], num * Matrix[0, 1], num * Matrix[0, 2],
+                     num * Matrix[1, 0], num * Matrix[1, 1], num * Matrix[1, 2],
+                     num * Matrix[2, 0], num * Matrix[2, 1], num * Matrix[2, 2]
+
+                );
         }
         #endregion
     }
