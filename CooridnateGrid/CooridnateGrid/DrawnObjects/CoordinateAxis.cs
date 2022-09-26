@@ -43,8 +43,8 @@ namespace CooridnateGrid.DrawnObjects
 
         public CoordinateAxis(MyPlane pl)
         {
-            CellAmountOnAbscissaAxe = pl.BitmapWidth / pl.StepInPixels;
-            CellAmountOnOrdinateAxe = pl.BitmapHeight / pl.StepInPixels;
+            CellAmountOnAbscissaAxe = (int)(pl.BitmapWidth) / pl.StepInPixels;
+            CellAmountOnOrdinateAxe = (int)(pl.BitmapHeight) / pl.StepInPixels;
             MyColor = System.Windows.Media.Color.FromRgb(128, 128, 128);
         }
         /// <summary>
@@ -81,6 +81,9 @@ namespace CooridnateGrid.DrawnObjects
             {
                 yield return Point(x, y);
             }
+            //Uncomment bottom lines and comment uper to reduce points amount, which optimize drawing process
+            //yield return Point(-CellAmountOnAbscissaAxe / 2, y);
+            //yield return Point(CellAmountOnAbscissaAxe / 2, y);
         }
         private IEnumerable<Vector3> GetOrdinateLine(int x)
         {
@@ -88,6 +91,9 @@ namespace CooridnateGrid.DrawnObjects
             {
                 yield return Point(x, y);
             }
+            //Uncomment bottom lines and comment uper to reduce points amount, which optimize drawing process
+            //yield return Point(x, -CellAmountOnOrdinateAxe / 2);
+            //yield return Point(x, CellAmountOnOrdinateAxe / 2);
         }
         protected override IEnumerable<IEnumerable<Vector3>> ContourPoints()
         {
@@ -95,9 +101,10 @@ namespace CooridnateGrid.DrawnObjects
         }
         private void DrawOrdinateAndAbscissaGrid(CoordinatePlane.MyPlane pl, Graphics g)
         {
+            Func<Vector3, Vector3> ToBitmap = IsPlaneTransfromMe ? pl.ToBitmapCoord : pl.ToBitmapCoordWithoutTransform;
             for (var x = -CellAmountOnAbscissaAxe / 2; x <= CellAmountOnAbscissaAxe / 2; x++)
             {
-                foreach (var points in GetOrdinateLine(x).Select(point => pl.ToBitmapCoord(point))
+                foreach (var points in GetOrdinateLine(x).Select(point => ToBitmap(point))
                                                          .LineCreator())
                 {
                     System.Windows.Media.Color color = x != 0 ? MyColor : System.Windows.Media.Color.FromRgb(0, 0, 255);
@@ -107,7 +114,7 @@ namespace CooridnateGrid.DrawnObjects
 
             for (var y = -CellAmountOnOrdinateAxe / 2; y <= CellAmountOnOrdinateAxe / 2; y++)
             {
-                foreach (var points in GetAbscissaLine(y).Select(point => pl.ToBitmapCoord(point))
+                foreach (var points in GetAbscissaLine(y).Select(point => ToBitmap(point))
                                                          .LineCreator())
                 {
                     System.Windows.Media.Color color = y != 0 ? MyColor : System.Windows.Media.Color.FromRgb(0, 0, 255);
@@ -118,18 +125,19 @@ namespace CooridnateGrid.DrawnObjects
         }
         private void DrawElements(CoordinatePlane.MyPlane pl, Graphics g)
         {
-            var abscissaEnd = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe/2, 0));
-            var ordinateEnd = pl.ToBitmapCoord(Point(0, CellAmountOnOrdinateAxe/2));
+            Func<Vector3, Vector3> ToBitmap = IsPlaneTransfromMe ? pl.ToBitmapCoord : pl.ToBitmapCoordWithoutTransform;
+            var abscissaEnd = ToBitmap(Point(CellAmountOnAbscissaAxe/2, 0));
+            var ordinateEnd = ToBitmap(Point(0, CellAmountOnOrdinateAxe/2));
             var k = 0.6;
             var k1 = 0.4;
-            var abscissaArrowUp = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 -k, k1));
-            var abscissaArrowDown = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 -k, -k1));
-            var ordinateArrowRight = pl.ToBitmapCoord(Point(k1, CellAmountOnOrdinateAxe / 2 - k));
-            var ordinateArrowLeft = pl.ToBitmapCoord(Point(-k1, CellAmountOnOrdinateAxe / 2 - k));
-            var temp1 = pl.ToBitmapCoord(Point(1,0.3));
-            var temp2 = pl.ToBitmapCoord(Point(1, -0.3));
-            var temp3 = pl.ToBitmapCoord(Point(0.3,1));
-            var temp4 = pl.ToBitmapCoord(Point(-0.3,1));
+            var abscissaArrowUp = ToBitmap(Point(CellAmountOnAbscissaAxe / 2 -k, k1));
+            var abscissaArrowDown = ToBitmap(Point(CellAmountOnAbscissaAxe / 2 -k, -k1));
+            var ordinateArrowRight = ToBitmap(Point(k1, CellAmountOnOrdinateAxe / 2 - k));
+            var ordinateArrowLeft = ToBitmap(Point(-k1, CellAmountOnOrdinateAxe / 2 - k));
+            var temp1 = ToBitmap(Point(1,0.3));
+            var temp2 = ToBitmap(Point(1, -0.3));
+            var temp3 = ToBitmap(Point(0.3,1));
+            var temp4 = ToBitmap(Point(-0.3,1));
             var color1 = System.Windows.Media.Color.FromRgb(0, 0, 255);
             var color2 = System.Windows.Media.Color.FromRgb(255, 0, 0);
             pl.DrawLine(g, Tuple.Create(abscissaEnd, abscissaArrowUp), color1);
@@ -142,11 +150,12 @@ namespace CooridnateGrid.DrawnObjects
 
         private void DrawText(CoordinatePlane.MyPlane pl, Graphics g)
         {
-            var xPoint = pl.ToBitmapCoord(Point(CellAmountOnAbscissaAxe / 2 - 1.5, 0 - 0.5));
-            var yPoint = pl.ToBitmapCoord(Point(0 + 0.5, CellAmountOnOrdinateAxe / 2 - 0.5));
-            var zeroPoint = pl.ToBitmapCoord(Point(0 + 0.1, 0 + 0.1));
-            var onePointX = pl.ToBitmapCoord(Point(1 + 0.1, 0 + 0.1));
-            var onePointY = pl.ToBitmapCoord(Point(0 + 0.1, 1 + 0.1));
+            Func<Vector3, Vector3> ToBitmap = IsPlaneTransfromMe ? pl.ToBitmapCoord : pl.ToBitmapCoordWithoutTransform;
+            var xPoint = ToBitmap(Point(CellAmountOnAbscissaAxe / 2 - 1.5, 0 - 0.5));
+            var yPoint = ToBitmap(Point(0 + 0.5, CellAmountOnOrdinateAxe / 2 - 0.5));
+            var zeroPoint = ToBitmap(Point(0 + 0.1, 0 + 0.1));
+            var onePointX = ToBitmap(Point(1 + 0.1, 0 + 0.1));
+            var onePointY = ToBitmap(Point(0 + 0.1, 1 + 0.1));
             g.DrawString("X", new Font("Times New Roman", 12), System.Drawing.Brushes.Blue, xPoint.X, xPoint.Y);
             g.DrawString("Y", new Font("Times New Roman", 12), System.Drawing.Brushes.Blue, yPoint.X, yPoint.Y);
             g.DrawString("0", new Font("Times New Roman", 10), System.Drawing.Brushes.Blue, zeroPoint.X, zeroPoint.Y);
@@ -155,8 +164,6 @@ namespace CooridnateGrid.DrawnObjects
         }
         public void Draw(CoordinatePlane.MyPlane pl, Graphics g)
         {
-            CellAmountOnAbscissaAxe = pl.BitmapWidth / pl.StepInPixels;
-            CellAmountOnOrdinateAxe = pl.BitmapHeight / pl.StepInPixels;
             DrawOrdinateAndAbscissaGrid(pl, g);
             DrawText(pl,g);
         }
