@@ -29,6 +29,11 @@ namespace CooridnateGrid
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Variables
+            private Dictionary<Key, Action> keysAndActions = new Dictionary<Key, Action>();
+            private int cameraMoveStepInPixels = 25; 
+            private double cameraScaleCoef = 0.5;
+        #endregion
         #region Propreties
         private int BitmapWidth { get; set; }
         private int BitmapHeight { get; set; }
@@ -41,7 +46,7 @@ namespace CooridnateGrid
         private RotateTransformation Rotate { get; set; }
         private TransformationConnector LinearTransformation { get; set; }
         private TransformationConnector Transformation { get; set; }
-        private AffineTransformation Athene { get; set; }
+        private AffineTransformation Affine { get; set; }
         private ProjectiveTransformation Project { get; set; }
 
         public Stopwatch Timer { get; set; } = new Stopwatch();
@@ -55,10 +60,6 @@ namespace CooridnateGrid
                 return (float)(Timer.Elapsed - PreviousTick).TotalMilliseconds;
             }
         }
-
-        private bool Reverse { get; set; } = false;
-
-        bool IsPressed { get; set; } = false;
         #endregion
 
         public MainWindow()
@@ -66,13 +67,33 @@ namespace CooridnateGrid
             InitializeComponent();
             Move = (MoveTransformation)this.Resources["move"];
             Rotate = (RotateTransformation)this.Resources["rotate"];
-            Athene = (AffineTransformation)this.Resources["athene"];
+            Affine = (AffineTransformation)this.Resources["affine"];
             Project = (ProjectiveTransformation)this.Resources["project"];
             LinearTransformation = new TransformationConnector(Rotate, Move);
-            Transformation = new TransformationConnector(Athene, Project);
+            Transformation = new TransformationConnector(Affine, Project);
             Project.R0 = new Vector3(0, 0, 1500);
             Project.Rx = new Vector3(-1000, 0, 1);
             Project.Ry = new Vector3(0, 1000, 1);
+            keysAndActions.Add(System.Windows.Input.Key.A, KeyA);
+            keysAndActions.Add(System.Windows.Input.Key.D, KeyD);
+            keysAndActions.Add(System.Windows.Input.Key.W, KeyW);
+            keysAndActions.Add(System.Windows.Input.Key.S, KeyS);
+        }
+        void KeyA()
+        {
+            Pl.Dx += cameraMoveStepInPixels;
+        }
+        void KeyD()
+        {
+            Pl.Dx -= cameraMoveStepInPixels;
+        }
+        void KeyW()
+        {
+            Pl.Dy += cameraMoveStepInPixels;
+        }
+        void KeyS()
+        {
+            Pl.Dy -= cameraMoveStepInPixels;
         }
 
         private void ViewPort_Loaded(object sender, RoutedEventArgs e)
@@ -86,6 +107,7 @@ namespace CooridnateGrid
             Draw();
             CompositionTarget.Rendering += CompositionTarget_Rendering;
         }
+
         private void Draw()
         {
             var wr = WR;
@@ -101,48 +123,18 @@ namespace CooridnateGrid
             }
             wr.AddDirtyRect(new Int32Rect(0, 0, BitmapWidth, BitmapHeight));
             wr.Unlock();
-           
-            if (IsPressed)
-            {
-                AutoRotate();
-            }
-            
         }
 
-        private  void CompositionTarget_Rendering(object? sender, EventArgs e)
+        private void CompositionTarget_Rendering(object? sender, EventArgs e)
         {
+
             if (ElapsedMillisecondsSinceLastTick >= 20)
-            {
+            { 
                 Draw();
                 PreviousTick = Timer.Elapsed;
             }
         }
-   
 
-        private void AutoRotate()
-        {
-             if (Pl.Transform.GetInvocationList().Contains(Transformation))
-            {
-              
-                if (!Reverse)
-                {
-                    Project.Rx = Project.Rx + new Vector3(10, 0, 0);
-                }
-                else
-                {
-                    Project.Rx = Project.Rx - new Vector3(10, 0, 0);
-                }
-                if (Project.Rx.X >= 1000)
-                {
-                    Reverse = true;
-                }
-                else if (Project.Rx.X <= -1000)
-                {
-                    Reverse = false;
-
-                }
-            }
-        }
         private void CreatePlane()
         {
             Pl = new MyPlane(BitmapWidth, BitmapHeight, 20);
@@ -153,44 +145,75 @@ namespace CooridnateGrid
             StepInPixel.SetBinding(TextBox.TextProperty, bind);
             Axes = new CoordinateAxis(Pl);
             MyDrawing = ((Lab1Drawing)this.Resources["mainObj"]);
-           // var temp = new CoordinateAxis(BitmapWidth / Pl.StepInPixels, BitmapHeight / Pl.StepInPixels);
+            var temp = new CoordinateAxis(100,100);
+            temp.IsPlaneTransfromMe = false;
             MyDrawing.TransformMe += LinearTransformation;
-            // temp.TransformMe += Athene;
-            //temp.MyColor = Color.FromRgb(255, 0, 0);
+            //temp.TransformMe += Athene;
+            //temp.MyColor = System.Windows.Media.Color.FromRgb(100, 0, 0);
             //Pl.Transform += Transformation;
-            Pl.Transform += Athene;
+            Pl.Transform += Affine;
+            Axes.MyColor = System.Windows.Media.Color.FromRgb(0,180, 0);
+            //Axes.TransformMe += Athene;
+            //MyDrawing.TransformMe += Athene;
+            Pl.AddObject(temp);
             Pl.AddObject(Axes);
             Pl.AddObject(MyDrawing);
-            //Pl.AddObject(temp);
+           
         }
 
         private void ToDafaultValue_Click(object sender, RoutedEventArgs e)
         {
             MyDrawing.ReturnToDefaultSize();
+            Pl.ScaleCoef = 1;
+            Pl.Dx = 0;
+            Pl.Dy = 0;
         }
 
         private void CancelProjectionTransformation_Click(object sender, RoutedEventArgs e)
         {
             if (Pl.Transform.GetInvocationList().Contains(Transformation))
-            {
+            { 
                 Pl.Transform -= Transformation;
-                Pl.Transform += Athene;
-               
+                Pl.Transform += Affine;
+                //Pl.BitmapWidth -= 50;
+                //Pl.BitmapHeight -= 50;
             }
         }
 
         private void ApplyProjectionTransformation_Click(object sender, RoutedEventArgs e)
         {  if (!Pl.Transform.GetInvocationList().Contains(Transformation))
             {
-                Pl.Transform -= Athene;
+                Pl.Transform -= Affine;
                 Pl.Transform += Transformation;
             }
         }
 
-       
-        private void RotateButton_Click(object sender, RoutedEventArgs e)
+        private void ViewPort_KeyDown(object sender, KeyEventArgs e)
         {
-            IsPressed = !IsPressed;
+           foreach(var key in keysAndActions.Keys)
+            {
+                if(e.Key.Equals(key))
+                {
+                    keysAndActions[key].Invoke();
+                }
+            }
+        }
+
+        private void ViewPort_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if(e.Delta < 0)
+            {
+                Pl.ScaleCoef += cameraScaleCoef;
+            }
+            else
+            {
+                Pl.ScaleCoef -= cameraScaleCoef;
+            }
+        }
+
+        private void ViewPort_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Keyboard.Focus(ViewPort);
         }
     }
 }
