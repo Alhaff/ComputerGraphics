@@ -71,9 +71,8 @@ namespace CooridnateGrid
             Project = (ProjectiveTransformation)this.Resources["project"];
             LinearTransformation = new TransformationConnector(Rotate, Move);
             Transformation = new TransformationConnector(Affine, Project);
-            Project.R0 = new Vector3(0, 0, 1500);
-            Project.Rx = new Vector3(-1000, 0, 1);
-            Project.Ry = new Vector3(0, 1000, 1);
+            Project.RxPoint.MyColor = System.Windows.Media.Color.FromRgb(0, 220, 255);
+            Project.RyPoint.MyColor = System.Windows.Media.Color.FromRgb(0, 220, 255);
             keysAndActions.Add(System.Windows.Input.Key.A, KeyA);
             keysAndActions.Add(System.Windows.Input.Key.D, KeyD);
             keysAndActions.Add(System.Windows.Input.Key.W, KeyW);
@@ -134,7 +133,7 @@ namespace CooridnateGrid
                 PreviousTick = Timer.Elapsed;
             }
         }
-
+        PointOnPlane point;
         private void CreatePlane()
         {
             Pl = new MyPlane(BitmapWidth, BitmapHeight, 20);
@@ -142,7 +141,7 @@ namespace CooridnateGrid
             Binding bind = new Binding();
             bind.Source = Pl;
             bind.Path = new PropertyPath("StepInPixels");
-            StepInPixel.SetBinding(TextBox.TextProperty, bind);
+            StepInPixel.SetBinding(TextBox.TextProperty, bind); 
             Axes = new CoordinateAxis(Pl);
             MyDrawing = ((Lab1Drawing)this.Resources["mainObj"]);
             var temp = new CoordinateAxis(100,100);
@@ -158,6 +157,7 @@ namespace CooridnateGrid
             Pl.AddObject(temp);
             Pl.AddObject(Axes);
             Pl.AddObject(MyDrawing);
+            Pl.AddObject(Rotate.CenterPoint);
            
         }
 
@@ -175,8 +175,9 @@ namespace CooridnateGrid
             { 
                 Pl.Transform -= Transformation;
                 Pl.Transform += Affine;
-                //Pl.BitmapWidth -= 50;
-                //Pl.BitmapHeight -= 50;
+                Pl.RemoveObject(Project.R0Point, Project.RxPoint, Project.RyPoint);
+                Pl.AddObject(Rotate.CenterPoint);
+                
             }
         }
 
@@ -185,6 +186,8 @@ namespace CooridnateGrid
             {
                 Pl.Transform -= Affine;
                 Pl.Transform += Transformation;
+                Pl.RemoveObject(Rotate.CenterPoint);
+                Pl.AddObject(Project.R0Point, Project.RxPoint, Project.RyPoint);
             }
         }
 
