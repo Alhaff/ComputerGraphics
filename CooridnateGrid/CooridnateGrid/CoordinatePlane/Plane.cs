@@ -119,9 +119,25 @@ namespace CooridnateGrid.CoordinatePlane
             Objects.Add(obj);
         }
 
+        public void AddObject(params DrawnObject[] objects)
+        {
+            foreach(var obj in objects)
+            {
+                AddObject(obj);
+            }
+        }
+
         public void RemoveObject(DrawnObject obj)
         {
             Objects.Remove(obj);
+        }
+
+        public void RemoveObject(params DrawnObject[] objects)
+        {
+            foreach(var obj in objects)
+            {
+                RemoveObject(obj);
+            }
         }
      
         public void Draw(Graphics g)
