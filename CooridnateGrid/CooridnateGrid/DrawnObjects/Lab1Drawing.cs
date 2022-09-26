@@ -28,8 +28,11 @@ namespace CooridnateGrid.DrawnObjects
             get { return _internalCircle; }
             private set
             {
-                _internalCircle = value;
-                OnPropertyChanged("InternalCircle");
+                if (value.R < _externalCircle.R)
+                {
+                    _internalCircle = value;
+                    OnPropertyChanged("InternalCircle");
+                }
             }
         }
 
@@ -38,8 +41,11 @@ namespace CooridnateGrid.DrawnObjects
             get { return _externalCircle; }
             private set
             {
-                _externalCircle = value;
-                OnPropertyChanged("ExternalSector");
+                if (value.R > _internalCircle.R)
+                {
+                    _externalCircle = value;
+                    OnPropertyChanged("ExternalSector");
+                }
             }
         }
 
@@ -48,34 +54,43 @@ namespace CooridnateGrid.DrawnObjects
             get { return _internalHeight; }
             set
             {
-                _internalHeight = value;
-                OnPropertyChanged("InternalHeight");
+                if (value > 0 && value < ExternalHeight)
+                {
+                    _internalHeight = value;
+                    OnPropertyChanged("InternalHeight");
+                }
             }
         }
 
         public float InternalWidth
         {
             get { return _internalWidth; }
-            set { 
-                _internalWidth = value;
-                if (InternalCircle != null)
+            set {
+                if (value > 0 && value < ExternalWidth)
                 {
-                    InternalCircle.StartBreakPoint =
-                        GetBreakPoint(InternalCircle, -Math.PI / 2 - Angle(value, InternalCircle.R));
-                    InternalCircle.EndBreakPoint =
-                       GetBreakPoint(InternalCircle, -Math.PI / 2 + Angle(value, InternalCircle.R));
+                    _internalWidth = value;
+                    if (InternalCircle != null)
+                    {
+                        InternalCircle.StartBreakPoint =
+                            GetBreakPoint(InternalCircle, -Math.PI / 2 - Angle(value, InternalCircle.R));
+                        InternalCircle.EndBreakPoint =
+                           GetBreakPoint(InternalCircle, -Math.PI / 2 + Angle(value, InternalCircle.R));
+                    }
+                    OnPropertyChanged("InternalWidth");
                 }
-                OnPropertyChanged("InternalWidth");
             }
         }
 
-        public float ExternalHeigth
+        public float ExternalHeight
         {
             get { return _externalHeight; }
             set
             {
-                _externalHeight = value;
-                OnPropertyChanged("ExternalHeight");
+                if (value > 0 && value > InternalHeight)
+                {
+                    _externalHeight = value;
+                    OnPropertyChanged("ExternalHeight");
+                }
             }
         }
 
@@ -84,15 +99,18 @@ namespace CooridnateGrid.DrawnObjects
             get { return _externalWidth; }
             set
             {
-                _externalWidth = value;
-                if (ExternalCircle != null)
+                if (value > 0 && value > InternalWidth)
                 {
-                    ExternalCircle.StartBreakPoint =
-                        GetBreakPoint(ExternalCircle, -Math.PI / 2 - Angle(value, ExternalCircle.R));
-                    ExternalCircle.EndBreakPoint =
-                       GetBreakPoint(ExternalCircle, -Math.PI / 2 + Angle(value, ExternalCircle.R));
+                    _externalWidth = value;
+                    if (ExternalCircle != null)
+                    {
+                        ExternalCircle.StartBreakPoint =
+                            GetBreakPoint(ExternalCircle, -Math.PI / 2 - Angle(value, ExternalCircle.R));
+                        ExternalCircle.EndBreakPoint =
+                           GetBreakPoint(ExternalCircle, -Math.PI / 2 + Angle(value, ExternalCircle.R));
+                    }
+                    OnPropertyChanged("ExternalWidth");
                 }
-                OnPropertyChanged("ExternalWidth");
             }
         }
 
@@ -111,8 +129,37 @@ namespace CooridnateGrid.DrawnObjects
             get { return _bottomRectangleHeight; }
             set
             {
-                _bottomRectangleHeight = value;
-                OnPropertyChanged("BottomRectangleHeight");
+                if (value > 0)
+                {
+                    _bottomRectangleHeight = value;
+                    OnPropertyChanged("BottomRectangleHeight");
+                }
+            }
+        }
+
+        public float InR 
+        {
+            get => InternalCircle.R;
+            set
+            {
+                if (value < ExternalCircle.R)
+                {
+                    InternalCircle.R = value;
+                    OnPropertyChanged("InR");
+                }
+            }
+        }
+
+        public float ExtR 
+        {
+            get => ExternalCircle.R;
+            set
+            {
+                if(value > InternalCircle.R)
+                {
+                    ExternalCircle.R = value;
+                    OnPropertyChanged("ExtR");
+                }
             }
         }
         #endregion
@@ -121,19 +168,19 @@ namespace CooridnateGrid.DrawnObjects
         public Lab1Drawing()
         {
             MyColor = Color.FromRgb(0, 0, 0);
-            InternalHeight = 1.75f * 4;
-            InternalWidth = 0.5f * 4;
-            ExternalHeigth = 2.15f * 4;
-            ExternalWidth = 1.1f * 4;
+            _externalHeight = 2.15f * 4;
+            _externalWidth = 1.1f * 4;
+            _internalHeight = 1.75f * 4;
+            _internalWidth = 0.5f * 4;
             var inR = 0.75f * 4;
             var extR = 1.375f * 4;
-            BottomRectangleWidth = 2.4f * 4;
-            BottomRectangleHeight = 0.2f * 4;
+            _bottomRectangleWidth = 2.4f * 4;
+            _bottomRectangleHeight = 0.2f * 4;
             var center = new Vector3(0, 0, 1);
             var inAngle = Angle(InternalWidth, inR);
             var extAngle = Angle(ExternalWidth, extR);
-            InternalCircle = new Circle(center, inR, MyColor);
-            ExternalCircle = new Circle(center, extR, MyColor);
+            _internalCircle = new Circle(center, inR, MyColor);
+            _externalCircle = new Circle(center, extR, MyColor);
             var startInBreakPoint = GetBreakPoint(InternalCircle, -Math.PI / 2 - inAngle);
             var endInBreakPoint = GetBreakPoint(InternalCircle, -Math.PI / 2 + inAngle);
             var startExtBreakPoint = GetBreakPoint(ExternalCircle, -Math.PI / 2 - extAngle);
@@ -159,19 +206,19 @@ namespace CooridnateGrid.DrawnObjects
         public void ReturnToDefaultSize()
         {
             MyColor = Color.FromRgb(0, 0, 0);
-            InternalHeight = 1.75f * 4;
-            InternalWidth = 0.5f * 4;
-            ExternalHeigth = 2.15f * 4;
-            ExternalWidth = 1.1f * 4;
+            _externalHeight = 2.15f * 4;
+            _externalWidth = 1.1f * 4;
+            _internalHeight = 1.75f * 4;
+            _internalWidth = 0.5f * 4;
             var inR = 0.75f * 4;
             var extR = 1.375f * 4;
-            BottomRectangleWidth = 2.4f * 4;
-            BottomRectangleHeight = 0.2f * 4;
+            _bottomRectangleWidth = 2.4f * 4;
+            _bottomRectangleHeight = 0.2f * 4;
             var center = new Vector3(0, 0, 1);
             var inAngle = Angle(InternalWidth, inR);
             var extAngle = Angle(ExternalWidth, extR);
-            InternalCircle = new Circle(center, inR, MyColor);
-            ExternalCircle = new Circle(center, extR, MyColor);
+            _internalCircle = new Circle(center, inR, MyColor);
+            _externalCircle = new Circle(center, extR, MyColor);
             var startInBreakPoint = GetBreakPoint(InternalCircle, -Math.PI / 2 - inAngle);
             var endInBreakPoint = GetBreakPoint(InternalCircle, -Math.PI / 2 + inAngle);
             var startExtBreakPoint = GetBreakPoint(ExternalCircle, -Math.PI / 2 - extAngle);
@@ -201,7 +248,7 @@ namespace CooridnateGrid.DrawnObjects
             var start = ExternalCircle.StartBreakPoint;
             var end = ExternalCircle.EndBreakPoint;
             var center = ExternalCircle.Center;
-            var extHeight = Line.GetLineEndPoint(center, ExternalHeigth, -Math.PI / 2);
+            var extHeight = Line.GetLineEndPoint(center, ExternalHeight, -Math.PI / 2);
             var len = (BottomRectangleWidth - ExternalWidth) / 2f;
             var leftDownCornerPoint = Line.GetLineEndPoint(extHeight, BottomRectangleWidth/2f, Math.PI);
             var leftUpCornerPoint = Line.GetLineEndPoint(leftDownCornerPoint, BottomRectangleHeight, Math.PI/2);
