@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CooridnateGrid.CoordinatePlane;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -19,12 +20,12 @@ namespace CooridnateGrid.Transformation
         public Vector3 Rx
         {
             get { return _rx; }
-            set {
+            set
+            {
                 _rx = value;
                 OnPropertyChanged("Rx");
             }
         }
-
         public Vector3 Ry
         {
             get { return _ry; }
@@ -53,20 +54,22 @@ namespace CooridnateGrid.Transformation
         }
         #endregion
 
-        public override Func<Vector3, Vector3> Transform => v => 
-        {
-            var tmp = new Vector3(v.X, v.Y, 1);
-            return tmp * ProjectiveMatrix;
-        
-         };
+
+        public override Func<Vector3, Vector3> Transform => v =>
         //{
-        //    var r0 = new Vector3(Center.X, Center.Y, 1);
-        //    var w0 = Center.Z;
-        //    var rx = new Vector3(XEnd.X, XEnd.Y, 1);
-        //    var wx = XEnd.Z;
-        //    var ry = new Vector3(YEnd.X, YEnd.Y, 1);
-        //    var wy = YEnd.Z;
-        //    return  ( r0 * w0 + rx * wx * v.X + ry * wy * v.Y) / ( w0 + wx* v.X + wy *v.Y);
+        //    var tmp = new Vector3(v.X, v.Y, 1);
+        //    var res = tmp * ProjectiveMatrix;
+        //    return res;
         //};
+        {
+            var r0 = new Vector2(_r0.X, _r0.Y);
+            var w0 = _r0.Z;
+            var rx = new Vector2(_rx.X, _rx.Y);
+            var wx = _rx.Z;
+            var ry = new Vector2(_ry.X, _ry.Y);
+            var wy = _ry.Z;
+            var tmp = (r0 * w0 + rx * wx * v.X + ry * wy * v.Y) / (w0 + wx * v.X + wy * v.Y);
+            return new Vector3(tmp.X, tmp.Y, 1);
+        };
     }
 }
