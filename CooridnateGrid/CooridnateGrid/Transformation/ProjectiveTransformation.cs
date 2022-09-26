@@ -5,41 +5,45 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using CooridnateGrid.DrawnObjects;
 
 namespace CooridnateGrid.Transformation
 {
     public class ProjectiveTransformation : Transformation
     {
         #region Variables
-        private Vector3 _r0 = new Vector3(0, 0, 1000);
-        private Vector3 _rx = new Vector3(800,50,1);
-        private Vector3 _ry = new Vector3(90,800,1);
+        private PointOnPlane _r0 = new PointOnPlane(new Vector3(0, 0, 1000));
+        private PointOnPlane _rx = new PointOnPlane(new Vector3(10,0,20));
+        private PointOnPlane _ry = new PointOnPlane(new Vector3(0,100,10));
         #endregion
 
         #region Propreties
+        public PointOnPlane R0Point { get => _r0; }
+        public PointOnPlane RxPoint { get => _rx; }
+        public PointOnPlane RyPoint { get => _ry; }
         public Vector3 Rx
         {
-            get { return _rx; }
+            get { return _rx.Center; }
             set
             {
-                _rx = value;
+                _rx.Center = value;
                 OnPropertyChanged("Rx");
             }
         }
         public Vector3 Ry
         {
-            get { return _ry; }
+            get { return _ry.Center; }
             set {
-                _ry = value;
+                _ry.Center = value;
                 OnPropertyChanged("Ry");
             }
         }
 
         public Vector3 R0
         {
-            get { return _r0; }
+            get { return _r0.Center; }
             set { 
-                _r0 = value;
+                _r0.Center = value;
                 OnPropertyChanged("R0");
             }
         }
@@ -62,12 +66,12 @@ namespace CooridnateGrid.Transformation
         //    return res;
         //};
         {
-            var r0 = new Vector2(_r0.X, _r0.Y);
-            var w0 = _r0.Z;
-            var rx = new Vector2(_rx.X, _rx.Y);
-            var wx = _rx.Z;
-            var ry = new Vector2(_ry.X, _ry.Y);
-            var wy = _ry.Z;
+            var r0 = new Vector2(R0.X, R0.Y);
+            var w0 = R0.Z;
+            var rx = new Vector2(Rx.X, Rx.Y);
+            var wx = Rx.Z;
+            var ry = new Vector2(Ry.X, Ry.Y);
+            var wy = Ry.Z;
             var tmp = (r0 * w0 + rx * wx * v.X + ry * wy * v.Y) / (w0 + wx * v.X + wy * v.Y);
             return new Vector3(tmp.X, tmp.Y, 1);
         };

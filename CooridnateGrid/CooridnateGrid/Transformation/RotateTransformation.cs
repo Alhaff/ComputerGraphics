@@ -7,22 +7,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using CooridnateGrid.ExtensionsClasses;
+using CooridnateGrid.DrawnObjects;
 
 namespace CooridnateGrid.Transformation
 {
     public class RotateTransformation : Transformation
     {
         #region Variables
-        private Vector3 _center = new Vector3(0,0,0);
+        private PointOnPlane  _center = new PointOnPlane(new Vector3(0,0,0));
         private double _angle = 0;
         #endregion
 
         #region Propreties
+        public PointOnPlane CenterPoint { get => _center; }
         public Vector3 Center
         {
-            get { return _center; }
+            get { return _center.Center; }
             set { 
-                _center = value;
+                _center.Center = value;
                 OnPropertyChanged("Center");
             }
         }
@@ -45,10 +47,9 @@ namespace CooridnateGrid.Transformation
                 (
                      CosAngle, SinAngle, 0,
                     -1 * SinAngle, CosAngle, 0,
-                    (-1 * _center.X * (CosAngle - 1) + _center.Y * SinAngle), 
-                    (-1 *_center.X * SinAngle - _center.Y * (CosAngle - 1)), 1
+                    (-1 * Center.X * (CosAngle - 1) + Center.Y * SinAngle), 
+                    (-1 * Center.X * SinAngle - Center.Y * (CosAngle - 1)), 1
                 );
-                
         }
         #endregion
         public override Func<Vector3, Vector3> Transform => v =>  v * RotationMatrix;
