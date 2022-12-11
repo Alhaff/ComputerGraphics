@@ -181,10 +181,10 @@ namespace CooridnateGrid.DrawnObjects
             var extAngle = Angle(ExternalWidth, extR);
             _internalCircle = new Circle(center, inR, MyColor);
             _externalCircle = new Circle(center, extR, MyColor);
-            var startInBreakPoint = GetBreakPoint(InternalCircle, -Math.PI / 2 + inAngle);
-            var endInBreakPoint = GetBreakPoint(InternalCircle, -Math.PI / 2 - inAngle);
-            var startExtBreakPoint = GetBreakPoint(ExternalCircle, -Math.PI / 2 + extAngle);
-            var endExtBreakPoint = GetBreakPoint(ExternalCircle, -Math.PI / 2 - extAngle);
+            var startInBreakPoint = GetBreakPoint(InternalCircle, -Math.PI / 2 - inAngle);
+            var endInBreakPoint = GetBreakPoint(InternalCircle, -Math.PI / 2 + inAngle);
+            var startExtBreakPoint = GetBreakPoint(ExternalCircle, -Math.PI / 2 - extAngle);
+            var endExtBreakPoint = GetBreakPoint(ExternalCircle, -Math.PI / 2 + extAngle);
             InternalCircle.StartBreakPoint = startInBreakPoint;
             InternalCircle.EndBreakPoint = endInBreakPoint;
             ExternalCircle.StartBreakPoint = startExtBreakPoint;
@@ -245,8 +245,8 @@ namespace CooridnateGrid.DrawnObjects
 
         internal IEnumerable<Vector3> GetExternalRectangle()
         {
-            var start = ExternalCircle.EndBreakPoint;
-            var end = ExternalCircle.StartBreakPoint;
+            var start = ExternalCircle.StartBreakPoint;
+            var end = ExternalCircle.EndBreakPoint;
             var center = ExternalCircle.Center;
             var extHeight = Line.GetLineEndPoint(center, ExternalHeight, -Math.PI / 2);
             var len = (BottomRectangleWidth - ExternalWidth) / 2f;
