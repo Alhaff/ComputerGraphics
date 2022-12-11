@@ -26,7 +26,7 @@ namespace CooridnateGrid.Transformation
                 if (_r0 == null)
                 {
                     _r0 = value;
-                    _r0.PropertyChanged += R0_PropertyChanged;
+                    _r0.PropertyChanged += (s,e) => OnPropertyChanged("R0");
                 }
                 _r0 = value;
                 OnPropertyChanged("R0Point");
@@ -40,7 +40,7 @@ namespace CooridnateGrid.Transformation
                 if (_rx == null)
                 {
                     _rx = value;
-                    _rx.PropertyChanged += Rx_PropertyChanged;
+                    _rx.PropertyChanged += (s,e) => OnPropertyChanged("Rx");
                 }
                 _rx = value;
                 OnPropertyChanged("RxPoint");
@@ -54,7 +54,7 @@ namespace CooridnateGrid.Transformation
                 if (_ry == null)
                 {
                     _ry = value;
-                    _ry.PropertyChanged += Ry_PropertyChanged;
+                    _ry.PropertyChanged += (s,e) => OnPropertyChanged("Ry");
                 }
                 _ry = value;
                 OnPropertyChanged("RyPoint");
@@ -118,18 +118,6 @@ namespace CooridnateGrid.Transformation
         }
         #endregion
 
-        private void R0_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged("R0");
-        }
-        private void Rx_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged("Rx");
-        }
-        private void Ry_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged("Ry");
-        }
         public override Func<Vector3, Vector3> Transform => v =>
         //{
         //    var tmp = new Vector3(v.X, v.Y, 1);
