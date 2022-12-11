@@ -23,7 +23,7 @@ namespace CooridnateGrid.CoordinatePlane
 
         #region Propreties
         public Func<Vector3, Vector3> Transform { get; set; } = v => v;
-        public List<DrawnObject> Objects { get; }
+        public LinkedList<DrawnObject> Objects { get; }
         public int BitmapWidth { get; set; }
         public int BitmapHeight { get; set; }
         public int StepInPixels
@@ -60,7 +60,7 @@ namespace CooridnateGrid.CoordinatePlane
         #region Constructors
         public MyPlane(int bitmapWidth, int bitmapHeight, int stepInPixels)
         {
-            Objects = new List<DrawnObject>();
+            Objects = new LinkedList<DrawnObject>();
             BitmapWidth = bitmapWidth;
             BitmapHeight = bitmapHeight;
             StepInPixels = stepInPixels;
@@ -109,14 +109,19 @@ namespace CooridnateGrid.CoordinatePlane
             var vectEnd = points.Item2;
             if (IsNormalValue(vectStart) && IsNormalValue(vectEnd))
             {
-                Point start = new Point((int)vectStart.X, (int)vectStart.Y);
-                Point end = new Point((int)vectEnd.X, (int)vectEnd.Y);
+                PointF start = new PointF(vectStart.X, vectStart.Y);
+                PointF end = new PointF(vectEnd.X, vectEnd.Y);
                 g.DrawLine(pen, start, end);
             }
         }
         public void AddObject(DrawnObject obj)
         {
-            Objects.Add(obj);
+            Objects.AddLast(obj);
+        }
+
+        public void AddObjectOnFirstPlace(DrawnObject obj)
+        {
+            Objects.AddFirst(obj);
         }
 
         public void AddObject(params DrawnObject[] objects)
@@ -132,6 +137,16 @@ namespace CooridnateGrid.CoordinatePlane
             Objects.Remove(obj);
         }
 
+        public void RemoveFirstObject()
+        {
+            Objects.RemoveFirst();
+        }
+
+        public void RemoveLastObject()
+        {
+            Objects.RemoveLast();
+        }
+
         public void RemoveObject(params DrawnObject[] objects)
         {
             foreach(var obj in objects)
@@ -143,6 +158,7 @@ namespace CooridnateGrid.CoordinatePlane
         public void Draw(Graphics g)
         {
                 g.Clear(System.Drawing.Color.White);
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 foreach (var obj in Objects)
                 {
                     if (obj != null)
@@ -166,6 +182,13 @@ namespace CooridnateGrid.CoordinatePlane
             var x = (transformed.X * StepInPixels)/ ScaleCoef + BitmapWidth / 2 + Dx;
             var y = (-(transformed.Y * StepInPixels)/ ScaleCoef + BitmapHeight / 2) + Dy;
             return new Vector3((float)x, (float)y, 1);
+        }
+
+        public Vector3 ToPlaneCoord(Vector3 bitmapCoord)
+        {
+            var x = ((bitmapCoord.X - Dx - BitmapWidth / 2) * ScaleCoef) / StepInPixels;
+            var y = -((bitmapCoord.Y - Dy - BitmapHeight / 2) * ScaleCoef) / StepInPixels;
+            return new Vector3((float)x, (float)y, bitmapCoord.Z);
         }
 
         public Vector3 ToBitmapCoordWithoutTransform(Vector3 planeCoord)
