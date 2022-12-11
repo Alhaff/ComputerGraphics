@@ -29,7 +29,7 @@ namespace CooridnateGrid.DrawnObjects
         {
             get { return _startBreakPoint; }
             set {
-                    if (value.LenFor2Dimension() <= R + 1E-5)
+                    if ((value - Center).LenFor2Dimension() <= R + 1E-5)
                     {
                     _startBreakPoint = value;
                     OnPropertyChanged("StartBreakPoint");
@@ -42,7 +42,7 @@ namespace CooridnateGrid.DrawnObjects
             get { return _endBreakPoint; }
             set {
                
-                if ( value.LenFor2Dimension() <= R + 1E-5)
+                if ((value - Center).LenFor2Dimension() <= R + 1E-5)
                 {
                     _endBreakPoint = value;
                     OnPropertyChanged("EndBreakPoint");
@@ -106,15 +106,25 @@ namespace CooridnateGrid.DrawnObjects
         }
         internal IEnumerable<Vector3> GetCirclePoints()
         {
-            var startAngle = StartBreakPoint.Angle() < 0? 2 * Math.PI - Math.Abs(StartBreakPoint.Angle()) : StartBreakPoint.Angle();
-            var endAngle = EndBreakPoint.Angle() <= 0 ? 2 * Math.PI - Math.Abs(EndBreakPoint.Angle()) : EndBreakPoint.Angle();
-            var start = -2* Math.PI + Math.Max(endAngle, startAngle);
-            var end = Math.Min(endAngle, startAngle);
-            end = end == 0 ? 2 * Math.PI : end;
+            var startAngle = (StartBreakPoint - Center).Angle();
+            var endAngle = (EndBreakPoint - Center).Angle();
+            var start = startAngle;
+            var end = endAngle;
+            if(end <= start)
+            {
+                end += 2 * Math.PI;
+            }
+           
             for (double t = start; t <= end; t += Math.PI / 180)
             {
                 yield return Line.GetLineEndPoint(Center, R, t);
             }
+            
+        }
+
+        public Vector3 GetBreakPoint(double angle)
+        {
+            return Line.GetLineEndPoint(Center, R, angle);
         }
         protected override IEnumerable<IEnumerable<Vector3>> ContourPoints()
         {
