@@ -77,23 +77,23 @@ namespace CooridnateGrid.DrawnObjects
         private Vector3 Point(double x, double y) => TransformMe(new Vector3((float)x, (float)y,1));
         private IEnumerable<Vector3> GetAbscissaLine(int y)
         {
-            for (int x = -CellAmountOnAbscissaAxe / 2; x <= CellAmountOnAbscissaAxe / 2; x++)
-            {
-                yield return Point(x, y);
-            }
+            //for (int x = -CellAmountOnAbscissaAxe / 2; x <= CellAmountOnAbscissaAxe / 2; x++)
+            //{
+            //    yield return Point(x, y);
+            //}
             //Uncomment bottom lines and comment uper to reduce points amount, which optimize drawing process
-            //yield return Point(-CellAmountOnAbscissaAxe / 2, y);
-            //yield return Point(CellAmountOnAbscissaAxe / 2, y);
+            yield return Point(-CellAmountOnAbscissaAxe / 2, y);
+            yield return Point(CellAmountOnAbscissaAxe / 2, y);
         }
         private IEnumerable<Vector3> GetOrdinateLine(int x)
         {
-            for (int y = -CellAmountOnOrdinateAxe / 2; y <= CellAmountOnOrdinateAxe / 2; y++)
-            {
-                yield return Point(x, y);
-            }
+            //for (int y = -CellAmountOnOrdinateAxe / 2; y <= CellAmountOnOrdinateAxe / 2; y++)
+            //{
+            //    yield return Point(x, y);
+            //}
             //Uncomment bottom lines and comment uper to reduce points amount, which optimize drawing process
-            //yield return Point(x, -CellAmountOnOrdinateAxe / 2);
-            //yield return Point(x, CellAmountOnOrdinateAxe / 2);
+            yield return Point(x, -CellAmountOnOrdinateAxe / 2);
+            yield return Point(x, CellAmountOnOrdinateAxe / 2);
         }
         protected override IEnumerable<IEnumerable<Vector3>> ContourPoints()
         {
