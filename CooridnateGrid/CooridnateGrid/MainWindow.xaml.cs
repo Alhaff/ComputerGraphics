@@ -34,25 +34,22 @@ namespace CooridnateGrid
             private int cameraMoveStepInPixels = 25; 
             private double cameraScaleCoef = 0.5;
         #endregion
+
         #region Propreties
         private int BitmapWidth { get; set; }
         private int BitmapHeight { get; set; }
         private WriteableBitmap WR { get; set; }
         public MyPlane Pl { get; set; }
         private CoordinateAxis Axes { get; set; }
-        private Lab1Drawing MyDrawing { get; set; }
-
+        private CoordinateAxis UntransformAxes { get; set; }
         private MoveTransformation Move { get; set; }
         private RotateTransformation Rotate { get; set; }
         private TransformationConnector LinearTransformation { get; set; }
         private TransformationConnector Transformation { get; set; }
         private AffineTransformation Affine { get; set; }
         private ProjectiveTransformation Project { get; set; }
-
         public Stopwatch Timer { get; set; } = new Stopwatch();
-
         private TimeSpan PreviousTick { get; set; }
-
         public float ElapsedMillisecondsSinceLastTick
         {
             get
@@ -61,7 +58,6 @@ namespace CooridnateGrid
             }
         }
         #endregion
-
         public MainWindow()
         {
             InitializeComponent();
@@ -71,12 +67,13 @@ namespace CooridnateGrid
             Project = (ProjectiveTransformation)this.Resources["project"];
             LinearTransformation = new TransformationConnector(Rotate, Move);
             Transformation = new TransformationConnector(Affine, Project);
-            Project.RxPoint.MyColor = System.Windows.Media.Color.FromRgb(0, 220, 255);
-            Project.RyPoint.MyColor = System.Windows.Media.Color.FromRgb(0, 220, 255);
+           // Project.RxPoint.MyColor = System.Windows.Media.Color.FromRgb(0, 220, 255);
+           // Project.RyPoint.MyColor = System.Windows.Media.Color.FromRgb(0, 220, 255);
             keysAndActions.Add(System.Windows.Input.Key.A, KeyA);
             keysAndActions.Add(System.Windows.Input.Key.D, KeyD);
             keysAndActions.Add(System.Windows.Input.Key.W, KeyW);
             keysAndActions.Add(System.Windows.Input.Key.S, KeyS);
+            
         }
         void KeyA()
         {
@@ -95,6 +92,8 @@ namespace CooridnateGrid
             Pl.Dy -= cameraMoveStepInPixels;
         }
 
+        
+
         private void ViewPort_Loaded(object sender, RoutedEventArgs e)
         {
             BitmapWidth = (int)this.ViewPortContainer.ActualWidth;
@@ -103,6 +102,7 @@ namespace CooridnateGrid
             ViewPort.Source = WR;
             Timer.Start();
             PreviousTick = Timer.Elapsed;
+          
             Draw();
             CompositionTarget.Rendering += CompositionTarget_Rendering;
         }
@@ -116,9 +116,12 @@ namespace CooridnateGrid
             var pixelPtr = wr.BackBuffer;
             var bm2 = new Bitmap(w, h, stride, CoordinatePlane.MyPlane.ConvertPixelFormat(wr.Format), pixelPtr);
             wr.Lock();
+           
             using (var g = Graphics.FromImage(bm2))
             {
+               
                 Pl.Draw(g);
+                
             }
             wr.AddDirtyRect(new Int32Rect(0, 0, BitmapWidth, BitmapHeight));
             wr.Unlock();
@@ -133,7 +136,6 @@ namespace CooridnateGrid
                 PreviousTick = Timer.Elapsed;
             }
         }
-        PointOnPlane point;
         private void CreatePlane()
         {
             Pl = new MyPlane(BitmapWidth, BitmapHeight, 20);
@@ -142,28 +144,36 @@ namespace CooridnateGrid
             bind.Source = Pl;
             bind.Path = new PropertyPath("StepInPixels");
             StepInPixel.SetBinding(TextBox.TextProperty, bind); 
-            Axes = new CoordinateAxis(Pl);
-            MyDrawing = ((Lab1Drawing)this.Resources["mainObj"]);
-            var temp = new CoordinateAxis(100,100);
-            temp.IsPlaneTransfromMe = false;
-            MyDrawing.TransformMe += LinearTransformation;
-            //temp.TransformMe += Athene;
-            //temp.MyColor = System.Windows.Media.Color.FromRgb(100, 0, 0);
-            //Pl.Transform += Transformation;
+            Axes = new CoordinateAxis(200,200);
             Pl.Transform += Affine;
             Axes.MyColor = System.Windows.Media.Color.FromRgb(0,180, 0);
-            //Axes.TransformMe += Athene;
-            //MyDrawing.TransformMe += Athene;
-            Pl.AddObject(temp);
             Pl.AddObject(Axes);
-            Pl.AddObject(MyDrawing);
+            Rotate.CenterPoint = new PointOnPlane(Pl, new Vector3(0, 0, 1));
+            Rotate.CenterPoint.IsPlaneTransfromMe = true;
+            Rotate.CenterPoint.AddPointOnCanvas(TempCanvas);
+            Project.R0Point = new PointOnPlane(Pl, new Vector3(0, 0, 1500));
+            Project.R0Point.MyColor = Colors.Silver;
+            Project.R0Point.IsPlaneTransfromMe = false;
+            Project.RxPoint = new PointOnPlane(Pl, new Vector3(10, 0, 100));
+            Project.RxPoint.MyColor = Colors.Silver;
+            Project.RxPoint.IsPlaneTransfromMe = false;
+            Project.RyPoint = new PointOnPlane(Pl, new Vector3(0, 100, 100));
+            Project.RyPoint.MyColor = Colors.Silver;
+            Project.RyPoint.IsPlaneTransfromMe = false;
             Pl.AddObject(Rotate.CenterPoint);
-           
+            AddLab1Obj();
         }
-
+       
         private void ToDafaultValue_Click(object sender, RoutedEventArgs e)
         {
-            MyDrawing.ReturnToDefaultSize();
+            if (MyDrawing != null)
+            {
+                MyDrawing.ReturnToDefaultSize();
+            }
+            if(MyEpicycloid != null)
+            {
+                MyEpicycloid.ReturnToDefaultSize();
+            }
             Pl.ScaleCoef = 1;
             Pl.Dx = 0;
             Pl.Dy = 0;
@@ -176,8 +186,13 @@ namespace CooridnateGrid
                 Pl.Transform -= Transformation;
                 Pl.Transform += Affine;
                 Pl.RemoveObject(Project.R0Point, Project.RxPoint, Project.RyPoint);
-                Pl.AddObject(Rotate.CenterPoint);
-                
+                Project.R0Point.RemovePointFromCanvas(TempCanvas);
+                Project.RxPoint.RemovePointFromCanvas(TempCanvas);
+                Project.RyPoint.RemovePointFromCanvas(TempCanvas);
+                //Pl.AddObject(Rotate.CenterPoint);
+                //Rotate.CenterPoint.AddPointOnCanvas(TempCanvas);
+
+
             }
         }
 
@@ -186,8 +201,12 @@ namespace CooridnateGrid
             {
                 Pl.Transform -= Affine;
                 Pl.Transform += Transformation;
-                Pl.RemoveObject(Rotate.CenterPoint);
+                //Pl.RemoveObject(Rotate.CenterPoint);
+                //Rotate.CenterPoint.RemovePointFromCanvas(TempCanvas);
                 Pl.AddObject(Project.R0Point, Project.RxPoint, Project.RyPoint);
+                Project.R0Point.AddPointOnCanvas(TempCanvas);
+                Project.RxPoint.AddPointOnCanvas(TempCanvas);
+                Project.RyPoint.AddPointOnCanvas(TempCanvas);
             }
         }
 
@@ -218,5 +237,44 @@ namespace CooridnateGrid
         {
             Keyboard.Focus(ViewPort);
         }
+        private void TempCanvas_DragOver(object sender, DragEventArgs e)
+        {
+            var dropPosition = e.GetPosition(TempCanvas);
+
+            if (e.Data.GetDataPresent(typeof(Ellipse)))
+            {
+                var point = (Ellipse)e.Data.GetData(typeof(Ellipse));
+                {
+                    Canvas.SetLeft(point, dropPosition.X - point.Width / 2);
+                    Canvas.SetTop(point, dropPosition.Y - point.Height / 2);
+                }
+            }
+        }
+
+        private void TempCanvas_Drop(object sender, DragEventArgs e)
+        {
+            var dropPosition = e.GetPosition(TempCanvas);
+
+            if (e.Data.GetDataPresent(typeof(Ellipse)))
+            {
+                var point = (Ellipse)e.Data.GetData(typeof(Ellipse));
+                {
+                    Canvas.SetLeft(point, dropPosition.X - point.Width / 2);
+                    Canvas.SetTop(point, dropPosition.Y - point.Height / 2);
+                }
+            }
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void ViewPort_MouseMove(object sender, MouseEventArgs e)
+        {
+
+        }
+
+       
     }
 }

@@ -14,18 +14,40 @@ namespace CooridnateGrid.Transformation
     public class RotateTransformation : Transformation
     {
         #region Variables
-        private PointOnPlane  _center = new PointOnPlane(new Vector3(0,0,0));
         private double _angle = 0;
+        private PointOnPlane _centerPoint;
         #endregion
-
+        
         #region Propreties
-        public PointOnPlane CenterPoint { get => _center; }
+        public PointOnPlane CenterPoint 
+        { 
+            get=> _centerPoint;
+            set 
+            {
+               
+                if(_centerPoint == null)
+                {
+                    _centerPoint = value;
+                    CenterPoint.PropertyChanged +=(s,v) => OnPropertyChanged("Center"); ;
+                }
+                _centerPoint = value;
+                OnPropertyChanged("CenterPoint");
+            } 
+        }
         public Vector3 Center
         {
-            get { return _center.Center; }
-            set { 
-                _center.Center = value;
+            get {
+                    if(CenterPoint != null)
+                    {
+                        return CenterPoint.Center;
+                    
+                    }
+                    return Vector3.Zero;
+                }
+            set {
+                CenterPoint.Center = value;
                 OnPropertyChanged("Center");
+               
             }
         }
         public double Angle

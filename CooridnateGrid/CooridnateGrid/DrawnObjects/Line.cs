@@ -43,12 +43,14 @@ namespace CooridnateGrid.DrawnObjects
         {
             Start = start;
             End = end;
+            MyColor = color;
         }
 
         public Line(Vector3 start, float length, double angle, Color color)
         {
             Start = start;
             End = GetLineEndPoint(start, length,angle);
+            MyColor = color;
         }
         #endregion
 

@@ -12,18 +12,64 @@ namespace CooridnateGrid.Transformation
     public class ProjectiveTransformation : Transformation
     {
         #region Variables
-        private PointOnPlane _r0 = new PointOnPlane(new Vector3(0, 0, 1000));
-        private PointOnPlane _rx = new PointOnPlane(new Vector3(10,0,20));
-        private PointOnPlane _ry = new PointOnPlane(new Vector3(0,100,10));
+        private PointOnPlane _r0;
+        private PointOnPlane _rx;
+        private PointOnPlane _ry;
         #endregion
 
         #region Propreties
-        public PointOnPlane R0Point { get => _r0; }
-        public PointOnPlane RxPoint { get => _rx; }
-        public PointOnPlane RyPoint { get => _ry; }
+        public PointOnPlane R0Point 
+        { 
+            get => _r0; 
+            set
+            {
+                if (_r0 == null)
+                {
+                    _r0 = value;
+                    _r0.PropertyChanged += R0_PropertyChanged;
+                }
+                _r0 = value;
+                OnPropertyChanged("R0Point");
+            }
+        }
+        public PointOnPlane RxPoint 
+        { 
+            get => _rx;
+            set
+            {
+                if (_rx == null)
+                {
+                    _rx = value;
+                    _rx.PropertyChanged += Rx_PropertyChanged;
+                }
+                _rx = value;
+                OnPropertyChanged("RxPoint");
+            }
+        }
+        public PointOnPlane RyPoint 
+        { 
+            get => _ry;
+            set
+            {
+                if (_ry == null)
+                {
+                    _ry = value;
+                    _ry.PropertyChanged += Ry_PropertyChanged;
+                }
+                _ry = value;
+                OnPropertyChanged("RyPoint");
+            }
+        }
         public Vector3 Rx
         {
-            get { return _rx.Center; }
+            get
+            {
+                if (_rx != null)
+                {
+                    return _rx.Center;
+                }
+                return Vector3.Zero;
+            }
             set
             {
                 _rx.Center = value;
@@ -32,7 +78,14 @@ namespace CooridnateGrid.Transformation
         }
         public Vector3 Ry
         {
-            get { return _ry.Center; }
+            get
+            {
+                if (_ry != null)
+                {
+                    return _ry.Center;
+                }
+                return Vector3.Zero;
+            }
             set {
                 _ry.Center = value;
                 OnPropertyChanged("Ry");
@@ -41,7 +94,14 @@ namespace CooridnateGrid.Transformation
 
         public Vector3 R0
         {
-            get { return _r0.Center; }
+            get
+            {
+                if (_r0 != null)
+                {
+                    return _r0.Center;
+                }
+                return Vector3.Zero;
+            }
             set { 
                 _r0.Center = value;
                 OnPropertyChanged("R0");
@@ -58,7 +118,18 @@ namespace CooridnateGrid.Transformation
         }
         #endregion
 
-
+        private void R0_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("R0");
+        }
+        private void Rx_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("Rx");
+        }
+        private void Ry_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("Ry");
+        }
         public override Func<Vector3, Vector3> Transform => v =>
         //{
         //    var tmp = new Vector3(v.X, v.Y, 1);

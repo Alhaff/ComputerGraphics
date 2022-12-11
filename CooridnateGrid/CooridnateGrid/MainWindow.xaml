@@ -16,6 +16,7 @@
         <converter:VectorToStringConverter x:Key="VectorConverter"/>
         <converter:Vector3ToStringConvertor x:Key="Vector3Converter"/>
         <drawObj:Lab1Drawing x:Key="mainObj"/>
+        <drawObj:Epicycloid x:Key="epicycloid"/>
         <transform:MoveTransformation x:Key="move"/>
         <transform:AffineTransformation x:Key="affine"/>
         <transform:RotateTransformation x:Key="rotate"/>
@@ -42,51 +43,224 @@
             </StackPanel>
             <Button Margin="20 10 20 10" x:Name="ToDafaultValue" Click="ToDafaultValue_Click">До початкових розмірів</Button>
             <TextBlock Text="Перетворення" FontSize="20" Margin="10" TextAlignment="Center"></TextBlock>
-            <TabControl  DataContext="{DynamicResource mainObj}">
+            <TabControl>
                 <TabItem Header="Лінійні">
                     <StackPanel Orientation="Vertical">
-                        <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
-                            <TextBlock Text="r = " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                    <TabControl SelectionChanged="TabControl_SelectionChanged">
+                        <TabItem Header="Лaб1" x:Name="Lab1" Selector.Selected="Lab1_Selected" Selector.Unselected="Lab1_Unselected">
+                            <StackPanel Orientation="Vertical"  DataContext="{DynamicResource mainObj}">
+                                <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
+                                    <TextBlock Text="r = " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                    <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding InR, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                        </StackPanel>
-                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
-                            <TextBlock Text="R =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                                </StackPanel>
+                                <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                                    <TextBlock Text="R =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                    <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding ExtR, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                        </StackPanel>
-                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
-                            <TextBlock Text="w =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                                </StackPanel>
+                                <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                                    <TextBlock Text="w =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                    <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding InternalWidth, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                        </StackPanel>
-                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
-                            <TextBlock Text="W =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                                </StackPanel>
+                                <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                                    <TextBlock Text="W =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                    <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding ExternalWidth, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                        </StackPanel>
-                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
-                            <TextBlock Text="h =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                                </StackPanel>
+                                <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                                    <TextBlock Text="h =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                    <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding InternalHeight, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                        </StackPanel>
-                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
-                            <TextBlock Text="H =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                                </StackPanel>
+                                <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                                    <TextBlock Text="H =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                    <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding ExternalHeight, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                        </StackPanel>
-                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
-                            <TextBlock Text="bW =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                                </StackPanel>
+                                <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                                    <TextBlock Text="bW =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                    <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding BottomRectangleWidth, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                        </StackPanel>
-                        <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
-                            <TextBlock Text="bH =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                                </StackPanel>
+                                <StackPanel Margin="10 0 10 0" Orientation="Horizontal">
+                                    <TextBlock Text="bH =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                    <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding BottomRectangleHeight, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                        </StackPanel>
+                                </StackPanel>
+                                
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Лаб2" x:Name="Lab2" Selector.Selected="Lab2_Selected" 
+                                 Selector.Unselected="Lab2_Unselected">
+                                <TabControl>
+                                    <TabItem Header="Параметри" x:Name="Lab2Parametrs">
+                                        <StackPanel Orientation="Vertical"  DataContext="{DynamicResource epicycloid}">
+                                        <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
+                                            <TextBlock Text="R = " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding R, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                                        </StackPanel>
+                                        <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
+                                            <TextBlock Text="r = " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding r, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                                        </StackPanel>
+                                        <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
+                                            <TextBlock Text="k = " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding k, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                                        </StackPanel>
+                                            <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
+                                                <TextBlock Text="Площа: " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                                <TextBox Width="80" TextAlignment="Center" Margin="5" 
+                            Text="{Binding Square, UpdateSourceTrigger= Explicit, Mode=OneWay}"></TextBox>
+                                            </StackPanel>
+                                            <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
+                                                <TextBlock Text="Довжина кривої: " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                                <TextBox Width="80" TextAlignment="Center" Margin="5" 
+                            Text="{Binding Length, UpdateSourceTrigger= Explicit, Mode=OneWay}"></TextBox>
+                                            </StackPanel>
+                                            <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
+                                            <TextBlock Text="AnimationCoef:" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                            <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
+                            Text="{Binding ScaleCoef, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                                        </StackPanel>
+                                       
+                                        <StackPanel Margin="10 10 10 0" Orientation="Vertical" HorizontalAlignment="Center">
+                                                <TextBlock Text="Анімація збільшення:" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Швидкість:" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
+                                                    <custom:SubmitTextBox x:Name="ScaleSpeed" Width="40" TextAlignment="Center" Margin="5"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                <Button x:Name="CancelScaleAnimationButton" Content="Скасувати" Margin="5" 
+                                                    Click="CancelScaleAnimationButton_Click"></Button>
+                                                <Button x:Name="ApplyScaleAnimationButton" Content="Застосувати" Margin="5" 
+                                                    Click="ApplyScaleAnimationButton_Click"></Button>
+                                            </StackPanel>
+                                        </StackPanel>
+                                            
+                                        <StackPanel Margin="10 10 10 0" Orientation="Vertical" HorizontalAlignment="Center">
+                                            
+                                             <TextBlock Text="Анімація обертання:" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
+                                        
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Швидкість:" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
+                                                    <custom:SubmitTextBox x:Name="RotateSpeed" Width="40" TextAlignment="Center" Margin="5"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                <Button x:Name="CancelRotateAnimationButton" Content="Скасувати" Margin="5" 
+                                                    Click="CancelRotateAnimationButton_Click"></Button>
+                                                <Button x:Name="ApplyRotateAnimationButton" Content="Застосувати" Margin="5" 
+                                                    Click="ApplyRotateAnimationButton_Click"></Button>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    </TabItem>
+                                    <TabItem x:Name="Lab2Tangent" Header="Дотична" 
+                                             Selector.Selected="Lab2Tangent_Selected" 
+                                             Selector.Unselected="Lab2Tangent_Unselected">
+                                        <StackPanel Orientation="Vertical">
+                                            <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
+                                                <TextBlock Text="Точка кривої: " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                                <custom:SubmitTextBox x:Name="tangentPoint"
+                                                          Width="100" TextAlignment="Center"
+                                                          Margin="5"></custom:SubmitTextBox>
+                                            </StackPanel>
+
+                                            <StackPanel Margin="10 10 10 0" Orientation="Horizontal">
+                                                <TextBlock Text="Кут: " FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                                <custom:SubmitTextBox x:Name="tangentAngle"
+                                                          Width="40" TextAlignment="Center"
+                                                          Margin="5"></custom:SubmitTextBox>
+                                            </StackPanel>
+                                            <StackPanel Margin="10 0 10 0" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <RepeatButton x:Name="ReduceAngleButton" Margin="5" Background="Transparent" Click="ReduceAngleButton_Click">
+                                                    <Viewbox Width="40" Height="20">
+                                                        <Canvas Width="24" Height="24">
+                                                            <Path Fill="Black" Data="M20,10V14H11L14.5,17.5L12.08,19.92L4.16,12L12.08,4.08L14.5,6.5L11,10H20Z" />
+                                                        </Canvas>
+                                                    </Viewbox>
+                                                </RepeatButton>
+                                                <RepeatButton x:Name="IncreaseAngleButton" Margin="5" Background="Transparent" Click="IncreaseAngleButton_Click">
+                                                    <Viewbox Width="40" Height="20">
+                                                        <Canvas Width="24" Height="24">
+                                                            <Path Fill="Black" Data="M4,10V14H13L9.5,17.5L11.92,19.92L19.84,12L11.92,4.08L9.5,6.5L13,10H4Z" />
+                                                        </Canvas>
+                                                    </Viewbox>
+                                                </RepeatButton>
+                                            </StackPanel>
+                                            <StackPanel Margin="10 10 10 0" Orientation="Vertical" HorizontalAlignment="Center">
+                                                <TextBlock Text="Анімація руху дотичної:" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
+                                       
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Швидкість:" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
+                                                    <custom:SubmitTextBox x:Name="TangentSpeed" Width="40" TextAlignment="Center" Margin="5"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button x:Name="CancelTangentAnimationButton" Content="Скасувати" Margin="5" 
+                                                    Click="CancelTangentAnimationButton_Click"></Button>
+                                                    <Button x:Name="ApplyTangentAnimationButton" Content="Застосувати" Margin="5" 
+                                                    Click="ApplyTangentAnimationButton_Click"></Button>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </TabItem>
+                                </TabControl>
+                            </TabItem>
+                            <TabItem Header="Лаб3" x:Name="Lab3" Selector.Selected="Lab3_Selected" 
+                                 Selector.Unselected="Lab3_Unselected">
+                                <StackPanel Orientation="Vertical">
+                                    <Button Margin ="20 5 20 5" x:Name="LoadBackgroundButton" Click="LoadBackgroundButton_Click"
+                                            Mouse.MouseDown="LoadBackgroundButton_MouseDown"
+                                            Mouse.MouseMove="LoadBackgroundButton_MouseMove">
+                                        Завантажити зображення
+                                    </Button>
+                                    <Button Margin ="20 5 20 5" x:Name="DeleteBackgroundButton" Click="DeleteBackgroundButton_Click">
+                                        Видалити останнє зображення
+                                    </Button>
+
+                                    <Button Margin ="20 5 20 5" x:Name="StartDrawCurveButton" Click="StartDrawCurveButton_Click">
+                                        Почати малювання
+                                    </Button>
+
+                                    <CheckBox Margin="20 5 20 5" x:Name="ShowCarcasePoint" Checked="ShowCarcasePoint_Checked" Unchecked="ShowCarcasePoint_Unchecked">
+                                       Показати точки каркасу
+                                    </CheckBox>
+                                    <CheckBox Margin="20 5 20 5" x:Name="ShowPoint" IsChecked="True" Checked="ShowPoint_Checked" Unchecked="ShowPoint_Unchecked">
+                                        Показати точки малюнку
+                                    </CheckBox>
+                                    <StackPanel Margin="20 5 20 5" Orientation="Vertical">
+                                        <TextBlock Margin="5" HorizontalAlignment="Center">
+                                           Ім'я файлу
+                                        </TextBlock>
+                                        <TextBox Margin="5" x:Name="fileName">
+                                            
+                                        </TextBox>
+                                        <Button x:Name="WriteToFileButton" Click="WriteToFileButton_Click">
+                                            Записати криву у файл
+                                        </Button>
+                                        <Button x:Name="ReadFromFileButton" Click="ReadFromFileButton_Click">
+                                           Прочитати криву з файлу
+                                        </Button>
+                                        <Button x:Name="DeleteCurrentCurveButton" Click="DeleteCurrentCurveButton_Click">
+                                           Видалити поточну криву
+                                        </Button>
+
+                                        <Button x:Name="StartAnimation" Click="StartAnimation_Click">
+                                            Запустити анімацію
+                                        </Button>
+                                        <DockPanel VerticalAlignment="Center" Margin="10">
+                                            <TextBox Text="{Binding ElementName=AnimationSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                                            <Slider Maximum="100" Minimum="1" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="AnimationSlider" ValueChanged="AnimationSlider_ValueChanged" />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </TabItem>
+                        </TabControl>
                         <StackPanel Margin="10 0 10 0" Orientation="Vertical" >
-                           
                             <TextBlock Text="Зміщення" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
                             <StackPanel HorizontalAlignment="Center" DataContext="{ DynamicResource move}" Orientation="Horizontal">
                                 <TextBlock Text="dX =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
@@ -97,16 +271,17 @@
                             Text="{Binding dY, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                             </StackPanel>
                             <TextBlock Text="Обертання" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
-                            <StackPanel DataContext="{ DynamicResource rotate }" Orientation="Horizontal">
-                                <TextBlock Text="Центр обертання(x,y):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                                <custom:SubmitTextBox Width="60" TextAlignment="Center" Margin="0 5 0 5" 
-                                    Text="{Binding Center, Converter={StaticResource VectorConverter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                                <TextBlock Text="Angle =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                            <StackPanel DataContext="{ DynamicResource rotate }" HorizontalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock Text="Кут повороту =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
                                 <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding Angle, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                             </StackPanel>
+                            <StackPanel DataContext="{ DynamicResource rotate }" Orientation="Horizontal">
+                                <TextBlock Text="Центр обертання(x,y):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                <custom:SubmitTextBox Width="80" TextAlignment="Center" Margin="5" 
+                                    Text="{Binding Center, Converter={StaticResource VectorConverter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
+                            </StackPanel>
                         </StackPanel>
-                        
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Афінні">
@@ -132,17 +307,17 @@
                     <StackPanel Orientation="Vertical" DataContext="{DynamicResource project}">
                         <StackPanel Orientation="Horizontal"  Margin="10">
                             <TextBlock Text="R0(x,y,w):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="100" TextAlignment="Center" Margin="5" 
+                            <custom:SubmitTextBox Width="150" TextAlignment="Center" Margin="5" 
                             Text="{Binding R0,Converter={StaticResource Vector3Converter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"  Margin="10">
                             <TextBlock Text="Rx(x,y,w):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="100" TextAlignment="Center" Margin="5" 
+                            <custom:SubmitTextBox Width="150" TextAlignment="Center" Margin="5" 
                             Text="{Binding Rx, Converter={StaticResource Vector3Converter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"  Margin="10">
                             <TextBlock Text="Ry(x,y,w):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
-                            <custom:SubmitTextBox Width="100" TextAlignment="Center" Margin="5" 
+                            <custom:SubmitTextBox Width="150" TextAlignment="Center" Margin="5" 
                             Text="{Binding Ry, Converter={StaticResource Vector3Converter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"  Margin="10">
@@ -156,10 +331,26 @@
             </TabControl>
            
         </StackPanel>
+        
         <Border BorderBrush="Green" BorderThickness="4" Grid.Row="1" Grid.Column="2">
             <Grid x:Name="ViewPortContainer">
+                <Canvas 
+                    x:Name="TempCanvas"
+                    Width="{Binding ViewPortContainer_ActualWidth}"
+                    Height="{Binding ViewPortContainer_ActualHeight}"
+                    Panel.ZIndex="5"
+                    Background="Transparent"
+                    AllowDrop="True" 
+                    MouseEnter="ViewPort_MouseEnter"
+                    Mouse.MouseWheel="ViewPort_MouseWheel"
+                    KeyDown="ViewPort_KeyDown"
+                    DragOver="TempCanvas_DragOver"
+                    >
+                </Canvas>
+               
                 <Image x:Name="ViewPort" Loaded="ViewPort_Loaded" KeyDown="ViewPort_KeyDown" MouseWheel="ViewPort_MouseWheel" 
-                       MouseEnter="ViewPort_MouseEnter" Focusable="True"></Image>
+                       MouseEnter="ViewPort_MouseEnter"  MouseMove="ViewPort_MouseMove"  Focusable="True"></Image>
+                
             </Grid>
         </Border>
     </Grid>

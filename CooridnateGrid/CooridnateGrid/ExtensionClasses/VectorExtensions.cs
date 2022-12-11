@@ -24,5 +24,14 @@ namespace CooridnateGrid.ExtensionsClasses
             return copy.Length();
         }
         public static double Angle(this Vector3 first) => Math.Atan2(first.Y, first.X);
+
+        public static bool IsSamePoint(this Vector3 point, Vector3 otherPoint, double precision)
+        {
+            double diffX = point.X - otherPoint.X;
+            double diffY = point.Y - otherPoint.Y;
+            double diffZ = point.Z - otherPoint.Z;
+            Func<double, bool> IsDiffAroundZero = (diff) => diff > -precision && diff < precision;
+            return IsDiffAroundZero(diffX) && IsDiffAroundZero(diffY) && IsDiffAroundZero(diffZ);
+        }
     }
 }
