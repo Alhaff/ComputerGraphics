@@ -14,7 +14,7 @@ namespace CooridnateGrid.ConverterClasses
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return $"{((Vector3)value).X} | {((Vector3)value).Y}";
+            return $"{((Vector3)value).X:0.00} | {((Vector3)value).Y:0.00}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
