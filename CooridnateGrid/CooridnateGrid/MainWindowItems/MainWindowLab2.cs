@@ -113,6 +113,11 @@ namespace CooridnateGrid
         {
             if (Pl != null)
             {
+                AffineTab.Visibility = Visibility.Visible;
+                ProjectiveTab.Visibility = Visibility.Visible;
+                Linear2D.Visibility = Visibility.Visible;
+                Linear3D.Visibility = Visibility.Collapsed;
+                CentralTab.Visibility = Visibility.Collapsed;
                 if (MyEpicycloid == null)
                 {
                     MyEpicycloid = (Epicycloid)this.Resources["epicycloid"];
@@ -123,7 +128,15 @@ namespace CooridnateGrid
                 }
               
                 RotateAnimationPreviousTick = Timer.Elapsed;
+                Pl.Transform += Affine;
+                if (BaseProjection != null)
+                {
+                    Pl.Transform -= BaseProjection;
+                }
+                if (!Pl.Objects.Contains(Axes))
+                    Pl.AddObject(Axes);
                 Pl.AddObject(MyEpicycloid);
+
             }
         }
 

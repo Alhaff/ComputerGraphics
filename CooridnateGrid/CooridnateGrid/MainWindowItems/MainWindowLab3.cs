@@ -49,16 +49,11 @@ namespace CooridnateGrid
         }
         private void Lab3_Selected(object sender, RoutedEventArgs e)
         {
-            //Bz = new Bezier5Fragment(Pl);
-            //Bz.TransformMe += LinearTransformation;
-            //Bz.APoint.TransformMe += LinearTransformation;
-            //Bz.BPoint.TransformMe += LinearTransformation;
-            //Bz.CPoint.TransformMe += LinearTransformation;
-            //Bz.DPoint.TransformMe += LinearTransformation;
-            //Bz.EPoint.TransformMe += LinearTransformation;
-            //Bz.FPoint.TransformMe += LinearTransformation;
-            //Bz.AddPointsOnCanvas(TempCanvas);
-            //Pl.AddObject(Bz);
+            AffineTab.Visibility = Visibility.Visible;
+            ProjectiveTab.Visibility = Visibility.Visible;
+            Linear2D.Visibility = Visibility.Visible;
+            Linear3D.Visibility = Visibility.Collapsed;
+            CentralTab.Visibility = Visibility.Collapsed;
             if (BzDrawer == null)
             {
                 BzDrawer = new Bezier5CurvesDrawer();
@@ -77,7 +72,18 @@ namespace CooridnateGrid
 
 
             }
+            else
+            {
+                BzDrawer.TransformMe += LinearTransformation;
+                if(Lab6Transformation != null)
+                BzDrawer.TransformMe -= Lab6Transformation;
+            }
             BzDrawer.MyColor = Colors.Blue;
+            if(!Pl.Transform.GetInvocationList().Contains(Affine))
+                Pl.Transform += Affine;
+            if (BaseProjection != null)
+                Pl.Transform -= BaseProjection;
+           
             Pl.AddObject(BzDrawer);
             Pl.RemoveObject(Axes);
             keysAndActions.Add(System.Windows.Input.Key.Escape, KeyEsc);
@@ -97,7 +103,6 @@ namespace CooridnateGrid
             BzDrawer.RemoveAllCurvesPointsFromPlane(TempCanvas);
             BzDrawer.RemoveAllHexagonPointsFromPlane(TempCanvas);
             Pl.RemoveObject(BzDrawer);
-            Pl.AddObject(Axes);
             keysAndActions.Remove(System.Windows.Input.Key.Escape);
             keysAndActions.Remove(System.Windows.Input.Key.P);
             // Pl.RemoveFirstObject();
