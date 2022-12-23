@@ -90,7 +90,7 @@ namespace CooridnateGrid.CoordinatePlane
                 foreach (var points in contour.Select(point => ToBitmap(point))
                                               .LineCreator())
                 {
-                     DrawLine(g, points, obj.MyColor);
+                     DrawLine(g, points,obj.Thickness, obj.MyColor);
                 }
                 
             }
@@ -100,11 +100,11 @@ namespace CooridnateGrid.CoordinatePlane
             return float.IsFinite(point.X) && float.IsFinite(point.Y);
                 
         }
-        internal void DrawLine(Graphics g, Tuple<Vector3,Vector3> points, System.Windows.Media.Color Color)
+        internal void DrawLine(Graphics g, Tuple<Vector3,Vector3> points, float width, System.Windows.Media.Color Color)
         {
             System.Drawing.Color color =
                         System.Drawing.Color.FromArgb(Color.A, Color.R, Color.G, Color.B);
-            System.Drawing.Pen pen = new System.Drawing.Pen(new SolidBrush(color));
+            System.Drawing.Pen pen = new System.Drawing.Pen(new SolidBrush(color),width);
             var vectStart = points.Item1;
             var vectEnd = points.Item2;
             if (IsNormalValue(vectStart) && IsNormalValue(vectEnd))
@@ -158,7 +158,7 @@ namespace CooridnateGrid.CoordinatePlane
         public void Draw(Graphics g)
         {
                 g.Clear(System.Drawing.Color.White);
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
                 foreach (var obj in Objects)
                 {
                     if (obj != null)
