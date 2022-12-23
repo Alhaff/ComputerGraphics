@@ -108,7 +108,7 @@ namespace CooridnateGrid.DrawnObjects
                                                          .LineCreator())
                 {
                     System.Windows.Media.Color color = x != 0 ? MyColor : System.Windows.Media.Color.FromRgb(0, 0, 255);
-                    pl.DrawLine(g, points, color);
+                    pl.DrawLine(g, points,Thickness, color);
                 }
             }
 
@@ -118,7 +118,7 @@ namespace CooridnateGrid.DrawnObjects
                                                          .LineCreator())
                 {
                     System.Windows.Media.Color color = y != 0 ? MyColor : System.Windows.Media.Color.FromRgb(0, 0, 255);
-                    pl.DrawLine(g, points, color);
+                    pl.DrawLine(g, points,Thickness, color);
                 }
             }
             DrawElements(pl, g);
@@ -140,12 +140,12 @@ namespace CooridnateGrid.DrawnObjects
             var temp4 = ToBitmap(Point(-0.3,1));
             var color1 = System.Windows.Media.Color.FromRgb(0, 0, 255);
             var color2 = System.Windows.Media.Color.FromRgb(255, 0, 0);
-            pl.DrawLine(g, Tuple.Create(abscissaEnd, abscissaArrowUp), color1);
-            pl.DrawLine(g, Tuple.Create(abscissaEnd, abscissaArrowDown), color1);
-            pl.DrawLine(g, Tuple.Create(ordinateEnd, ordinateArrowRight), color1);
-            pl.DrawLine(g, Tuple.Create(ordinateEnd, ordinateArrowLeft), color1);
-            pl.DrawLine(g, Tuple.Create(temp1, temp2), color2);
-            pl.DrawLine(g, Tuple.Create(temp3, temp4), color2);
+            pl.DrawLine(g, Tuple.Create(abscissaEnd, abscissaArrowUp),Thickness, color1);
+            pl.DrawLine(g, Tuple.Create(abscissaEnd, abscissaArrowDown), Thickness, color1);
+            pl.DrawLine(g, Tuple.Create(ordinateEnd, ordinateArrowRight),Thickness, color1);
+            pl.DrawLine(g, Tuple.Create(ordinateEnd, ordinateArrowLeft),Thickness, color1);
+            pl.DrawLine(g, Tuple.Create(temp1, temp2),Thickness, color2);
+            pl.DrawLine(g, Tuple.Create(temp3, temp4),Thickness, color2);
         }
 
         private void DrawText(CoordinatePlane.MyPlane pl, Graphics g)
