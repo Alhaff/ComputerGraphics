@@ -33,6 +33,8 @@ namespace CooridnateGrid.DrawnObjects
                 OnPropertyChanged("MyColor");
             }
         }
+
+        public float Thickness { get; set; } = 1;
         public bool IsPlaneTransfromMe { get; set; } = true;
         /// <summary>
         /// Функція, що буде застосована, до всіх точок об'єкту, які поврене метод ContourPoints()
