@@ -61,8 +61,8 @@ namespace CooridnateGrid.DrawnObjects
             var LineEnd = pl.ToBitmapCoord(TransformMe(Line.GetLineEndPoint(Center, 4, tangent + Math.PI)));
             var NormalLineStart = pl.ToBitmapCoord(TransformMe(Center));
             var NormalLineEnd = pl.ToBitmapCoord(TransformMe(Line.GetLineEndPoint(Center, 4, tangent + -Math.PI/2)));
-            pl.DrawLine(g, Tuple.Create(LineStart, LineEnd), MyColor);
-            pl.DrawLine(g, Tuple.Create(NormalLineStart, NormalLineEnd), MyColor);
+            pl.DrawLine(g, Tuple.Create(LineStart, LineEnd),Thickness, MyColor);
+            pl.DrawLine(g, Tuple.Create(NormalLineStart, NormalLineEnd),Thickness, MyColor);
         }        
     }
 }
