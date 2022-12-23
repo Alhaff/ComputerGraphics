@@ -43,8 +43,11 @@ namespace CooridnateGrid
         private CoordinateAxis Axes { get; set; }
         private CoordinateAxis UntransformAxes { get; set; }
         private MoveTransformation Move { get; set; }
+        private Offset3DTransformation Offset { get; set; }
         private RotateTransformation Rotate { get; set; }
+        private Rotate3DTransformations Rotate3D { get; set; }
         private TransformationConnector LinearTransformation { get; set; }
+        private TransformationConnector Linear3DTransformation { get; set; }
         private TransformationConnector Transformation { get; set; }
         private AffineTransformation Affine { get; set; }
         private ProjectiveTransformation Project { get; set; }
@@ -62,10 +65,14 @@ namespace CooridnateGrid
         {
             InitializeComponent();
             Move = (MoveTransformation)this.Resources["move"];
+            Offset = (Offset3DTransformation)this.Resources["Offset3D"];
             Rotate = (RotateTransformation)this.Resources["rotate"];
+            Rotate3D = (Rotate3DTransformations)this.Resources["Rotate3D"];
             Affine = (AffineTransformation)this.Resources["affine"];
             Project = (ProjectiveTransformation)this.Resources["project"];
-            LinearTransformation = new TransformationConnector(Rotate, Move);
+            centralProjectionTransformation = (CentralProjectionTransformation)this.Resources["CentralProjection"];
+            AxisesRotation = (Rotate3DTransformations)this.Resources["RotateAxis"];
+            LinearTransformation = new TransformationConnector(Move, Rotate);
             Transformation = new TransformationConnector(Affine, Project);
            // Project.RxPoint.MyColor = System.Windows.Media.Color.FromRgb(0, 220, 255);
            // Project.RyPoint.MyColor = System.Windows.Media.Color.FromRgb(0, 220, 255);
@@ -133,6 +140,25 @@ namespace CooridnateGrid
             if (ElapsedMillisecondsSinceLastTick >= 20)
             { 
                 Draw();
+                
+                if (Click1)
+                {
+                    Rotate3D.SetXAngLe += 0.1;
+                    if (Rotate3D.AngleX >= 360)
+                        Rotate3D.SetXAngLe = 0;
+                }
+                if (Click2)
+                {
+                    Rotate3D.SetYAngLe += 0.1;
+                    if (Rotate3D.AngleY >= 360)
+                        Rotate3D.SetYAngLe = 0;
+                }
+                if (Click3)
+                {
+                    Rotate3D.SetZAngLe += 0.1;
+                    if (Rotate3D.AngleZ >= 360)
+                        Rotate3D.SetZAngLe = 0;
+                }
                 PreviousTick = Timer.Elapsed;
             }
         }
@@ -267,14 +293,30 @@ namespace CooridnateGrid
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            
         }
 
         private void ViewPort_MouseMove(object sender, MouseEventArgs e)
         {
 
         }
+        bool Click1 = false;
+        private void RotateOnXaxis_Click(object sender, RoutedEventArgs e)
+        {
+            Click1 = !Click1;
+            
+        }
+        bool Click2 = false;
+        private void RotateOnYaxis_Click(object sender, RoutedEventArgs e)
+        {
+            Click2 = !Click2;
+        }
+        bool Click3 = false;
+        private void RotateOnZaxis_Click(object sender, RoutedEventArgs e)
+        {
+            Click3 = !Click3;
+        }
 
-       
+      
     }
 }
