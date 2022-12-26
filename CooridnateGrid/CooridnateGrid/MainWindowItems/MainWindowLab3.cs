@@ -19,7 +19,7 @@ namespace CooridnateGrid
     public partial class MainWindow : Window
     {
        // private Bezier5Fragment Bz { get; set; }
-       private string defaultPath = "../../../Resources/";
+        private string defaultPath = "../../../Resources/";
         private Bezier5CurvesDrawer BzDrawer { get; set; }
         private Bezier5CurvesDrawer Pikachu { get; set; }
         private List<List<Vector3>> DiffCurve { get; set; }
@@ -186,6 +186,7 @@ namespace CooridnateGrid
                 string path = defaultPath + fileName.Text + ".dat";
                 BzDrawer.ReadBinaryPointsFromFile(Pl, TempCanvas,path);
             }
+            BzDrawer.ApplyTransfromationToInerPoint();
             BeforeAnimationStart();
         }
 
