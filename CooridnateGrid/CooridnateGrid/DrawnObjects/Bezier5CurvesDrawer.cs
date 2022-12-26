@@ -404,6 +404,26 @@ namespace CooridnateGrid.DrawnObjects
             }
         }
 
+        private void SetupReadedCurves()
+        {
+            var start = bezier5Curves[0];
+                for (int i = 1; i < bezier5Curves.Count; i++)
+                {
+                    bezier5Curves[i].StartEndPoints[0] = start.StartEndPoints[1];
+                    bezier5Curves[i].StartEndPoints[0].PointCenter.MouseDown += (s, e) => BezierCurvePoint_MouseDown(canvas, s, e);
+                    start = bezier5Curves[i];
+                    if(i == bezier5Curves.Count -1)
+                    {
+                        if (start.StartEndPoints[1].Center == bezier5Curves[0].StartEndPoints[0].Center)
+                        {
+                            start.StartEndPoints[1] = bezier5Curves[0].StartEndPoints[0];
+                            start.StartEndPoints[1].PointCenter.MouseDown += (s, e) => BezierCurvePoint_MouseDown(canvas, s, e);
+                        }
+                    }  
+                }
+                
+        }
+
         public void ReadBinaryPointsFromFile(MyPlane pl, Canvas canvas, string filePath)
         {
             this.ClearCurrentCurve(canvas);
@@ -435,28 +455,8 @@ namespace CooridnateGrid.DrawnObjects
                             );
                     } 
                 }
-                catch
-                    {
-
-                }
-                var start = bezier5Curves[0];
-                for (int i = 1; i < bezier5Curves.Count; i++)
-                {
-                    bezier5Curves[i].StartEndPoints[0] = start.StartEndPoints[1];
-                    bezier5Curves[i].StartEndPoints[0].PointCenter.MouseDown += (s, e) => BezierCurvePoint_MouseDown(canvas, s, e);
-                    start = bezier5Curves[i];
-                    if(i == bezier5Curves.Count -1)
-                    {
-                        if (start.StartEndPoints[1].Center == bezier5Curves[0].StartEndPoints[0].Center)
-                        {
-                            start.StartEndPoints[1] = bezier5Curves[0].StartEndPoints[0];
-                            start.StartEndPoints[1].PointCenter.MouseDown += (s, e) => BezierCurvePoint_MouseDown(canvas, s, e);
-                        }
-                    }
-                   
-                }
-                
-               
+                catch { }
+                SetupReadedCurves();
                 reader.Close();
             }
             this.AddAllCurvesPointsOnPlane(canvas);
