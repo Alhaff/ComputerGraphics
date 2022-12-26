@@ -311,10 +311,10 @@
                         <StackPanel x:Name="Linear2D" Margin="10 0 10 0" Orientation="Vertical" >
                             <TextBlock Text="Зміщення на площині" FontSize="14" Margin="5" TextAlignment="Center"></TextBlock>
                             <StackPanel HorizontalAlignment="Center" DataContext="{ DynamicResource move}" Orientation="Horizontal">
-                                <TextBlock Text="dX =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                <TextBlock  x:Name="D1" Text="dX =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
                                 <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding dX, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
-                                <TextBlock Text="dY =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                <TextBlock  x:Name="D2" Text="dY =" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
                                 <custom:SubmitTextBox Width="40" TextAlignment="Center" Margin="5" 
                             Text="{Binding dY, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                             </StackPanel>
@@ -325,7 +325,7 @@
                             Text="{Binding Angle, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                             </StackPanel>
                             <StackPanel DataContext="{ DynamicResource rotate }" Orientation="Horizontal">
-                                <TextBlock Text="Центр обертання(x,y):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
+                                <TextBlock x:Name="Rotate1" Text="Центр обертання(x,y):" FontSize="10" Margin="5" TextAlignment="Center"></TextBlock>
                                 <custom:SubmitTextBox Width="80" TextAlignment="Center" Margin="5" 
                                     Text="{Binding Center, Converter={StaticResource VectorConverter}, UpdateSourceTrigger= Explicit}"></custom:SubmitTextBox>
                             </StackPanel>
