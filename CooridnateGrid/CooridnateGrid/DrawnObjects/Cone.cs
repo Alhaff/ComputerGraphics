@@ -18,65 +18,125 @@ namespace CooridnateGrid.DrawnObjects
     /// </summary>
     public class Cone : DrawnObject
     {
+        #region Variables
+
         private float _A = 20;
 
-        private Vector3 _center = new Vector3(0, 0,0);
+        private float _B = 10;
 
+        private float _C = 35f;
+
+        private int height = 36;
+
+        private double _ellipseDenominator = 20;
+
+        private double _zStep = 1;
+
+        private Vector3 _center = new Vector3(0, 0, 0);
+        #endregion
+
+        #region Propreties
         public Vector3 Center
         {
             get { return _center; }
             set
             {
                 _center = value;
-                OnPropertyChanged("Center");    
+                OnPropertyChanged("Center");
             }
         }
+
         public float A
         {
             get { return _A; }
-            set 
-            { 
+            set
+            {
                 _A = value;
                 OnPropertyChanged("A");
             }
         }
 
-        private float _B = 10;
-
         public float B
         {
             get { return _B; }
-            set 
-            { 
+            set
+            {
                 _B = value;
                 OnPropertyChanged("B");
             }
         }
 
-        private float _C = 35f;
-
         public float C
         {
             get { return _C; }
-            set 
-            { 
-                _C = value;
-                OnPropertyChanged("C");
+            set
+            {
+                if (value != 0)
+                {
+                    _C = value;
+                    OnPropertyChanged("C");
+                }
             }
         }
-        
-        private int height = 10;
 
         public int Height
         {
             get { return height; }
-            set 
-            { 
+            set
+            {
                 height = value;
                 OnPropertyChanged("Height");
             }
         }
 
+        /// <summary>
+        /// Вісь v конуса, рухається прямою від -infinity до +infinity
+        ///  <br/>
+        ///  Ділимо на параметр C щоб одиничні відрізки збігалися з вісю Z,
+        ///  тобто переміщення точки з v = 0 до v = 1 змістить її відповідно від z = 0 до z =1
+        /// </summary>
+        public double OneStepOnZAxis
+        {
+            get => ZStep / C;
+
+        }
+
+        /// <summary>
+        /// Вісь u конуса, рухається прямою від 0 до 2П
+        /// </summary>
+        public double OneStepOnEllipseAxis { get => Math.PI / EllipseDenominator; }
+
+        /// <summary>
+        /// Дільник на який ми ділимо П, для визначення одиничного кроку на осі u
+        /// </summary>
+        public double EllipseDenominator
+        {
+            get => _ellipseDenominator;
+            set
+            {
+                if (_ellipseDenominator != 0)
+                {
+                    _ellipseDenominator = value;
+                    OnPropertyChanged("EllipseDenominator");
+                }
+            }
+        }
+      
+        
+
+        public double ZStep
+        {
+            get => _zStep;
+            set
+            {
+                if (_zStep != 0)
+                {
+                    _zStep = value;
+                    OnPropertyChanged("EllipseDenominator");
+                }
+            }
+        }
+        #endregion
         public Vector3 EllipsePoint(double u, double v)
         {
             float x = Center.X + (float)(A * v * Math.Cos(u));
@@ -88,7 +148,7 @@ namespace CooridnateGrid.DrawnObjects
         private IEnumerable<Vector3> GetEllipsePoint(double v)
         {
             
-            for(double u = 0; u <= 2* Math.PI; u+= Math.PI/10)
+            for(double u = 0; u <= 2* Math.PI; u+= OneStepOnEllipseAxis)
             { 
                 yield return EllipsePoint(u,v);
             }
@@ -109,8 +169,7 @@ namespace CooridnateGrid.DrawnObjects
             };
             List<Vector3> elipse1 = null;
             List<Vector3> elipse2 = null;
-            var step = 1 / C;
-            for (double z = -Height / C; z <= Height/C; z += step)
+            for (double z = -Height* OneStepOnZAxis; z <= Height* OneStepOnZAxis; z += OneStepOnZAxis)
             {
                 elipse1 = GetEllipsePoint(z).ToList();
                 if (elipse2 != null)
@@ -121,8 +180,8 @@ namespace CooridnateGrid.DrawnObjects
                     }
                 }
                 yield return elipse1;
-                z += step;
-                if (z <= Height / C)
+                z += OneStepOnZAxis;
+                if (z <= Height * OneStepOnZAxis)
                 {
                     elipse2 = GetEllipsePoint(z).ToList();
                     var lines = getLines(elipse1, elipse2).ToList();
