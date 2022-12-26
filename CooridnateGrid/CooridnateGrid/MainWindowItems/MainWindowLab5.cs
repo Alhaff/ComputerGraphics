@@ -66,11 +66,7 @@ namespace CooridnateGrid
             if (!Pl.Objects.Contains(axes3D)) Pl.AddObject(axes3D);
             //if (!Pl.Objects.Contains(hip)) Pl.AddObject(hip);
             if (!Pl.Objects.Contains(cone)) Pl.AddObject(cone);
-            if (Pl.Objects.Contains(Rotate.CenterPoint))
-            {
-                Pl.RemoveObject(Rotate.CenterPoint);
-                Rotate.CenterPoint.RemovePointFromCanvas(TempCanvas);
-            }
+            
         }
         private void Lab5_Selected(object sender, RoutedEventArgs e)
         {
