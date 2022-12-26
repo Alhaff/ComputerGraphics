@@ -421,7 +421,6 @@ namespace CooridnateGrid.DrawnObjects
                         }
                     }  
                 }
-                
         }
 
         public void ReadBinaryPointsFromFile(MyPlane pl, Canvas canvas, string filePath)
