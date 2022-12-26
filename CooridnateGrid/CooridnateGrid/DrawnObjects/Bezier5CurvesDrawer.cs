@@ -404,7 +404,7 @@ namespace CooridnateGrid.DrawnObjects
             }
         }
 
-        private void SetupReadedCurves()
+        private void SetupReadedCurves(Canvas canvas)
         {
             var start = bezier5Curves[0];
                 for (int i = 1; i < bezier5Curves.Count; i++)
@@ -456,7 +456,7 @@ namespace CooridnateGrid.DrawnObjects
                     } 
                 }
                 catch { }
-                SetupReadedCurves();
+                SetupReadedCurves(canvas);
                 reader.Close();
             }
             this.AddAllCurvesPointsOnPlane(canvas);
