@@ -16,6 +16,7 @@ namespace CooridnateGrid
         public DecartToConeTransfromation decartToCone { get; set; }
 
         public TransformationConnector Lab6Transformation { get; set; }
+        public TransformationConnector PointTransformation { get; set; }
         private void Lab6_Selected(object sender, RoutedEventArgs e)
         {
             SetUpLab5();
@@ -26,7 +27,10 @@ namespace CooridnateGrid
                 decartToCone = new DecartToConeTransfromation(cone);
                 BindDecart();
             }
+
             Lab6Transformation = new TransformationConnector(LinearTransformation,Affine, decartToCone,Linear3DTransformation);
+
+            PointTransformation = new TransformationConnector(Affine, decartToCone, Linear3DTransformation);
             if (BzDrawer == null)
             {
                 BzDrawer = new Bezier5CurvesDrawer();
@@ -42,7 +46,11 @@ namespace CooridnateGrid
                 controlButtonText.FontSize = 18;
                 controlButtonText.HorizontalAlignment = HorizontalAlignment.Center;
                 controlButtonText.Background = new System.Windows.Media.SolidColorBrush(Colors.White);
+                if (Pl.Objects.Contains(Rotate.CenterPoint))
+                {
 
+                    Rotate.CenterPoint.TransformMe += PointTransformation;
+                }
                 BeforeAnimationStart();
 
             }else
@@ -50,6 +58,9 @@ namespace CooridnateGrid
                 BzDrawer.TransformMe -= LinearTransformation;
                 BzDrawer.TransformMe += Lab6Transformation;
             }
+            D1.Text = "dU =";
+            D2.Text = "dV =";
+            Rotate1.Text = "Центр обертання(u,v):";
             BzDrawer.MyColor = Colors.Blue;
             BzDrawer.RemoveAllCurvesPointsFromPlane(TempCanvas);
             BzDrawer.Thickness = 4;
@@ -69,8 +80,10 @@ namespace CooridnateGrid
             }
             Pl.RemoveObject(BzDrawer);
             BzDrawer.Thickness = 1;
-           
-            
+            D1.Text = "dX =";
+            D2.Text = "dY =";
+            Rotate1.Text = "Центр обертання(x,y):";
+
         }
     }
 }
