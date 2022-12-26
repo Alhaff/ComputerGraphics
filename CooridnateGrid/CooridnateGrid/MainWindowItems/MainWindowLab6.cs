@@ -28,9 +28,9 @@ namespace CooridnateGrid
                 BindDecart();
             }
 
-            Lab6Transformation = new TransformationConnector(LinearTransformation,Affine, decartToCone,Linear3DTransformation);
+            Lab6Transformation = new TransformationConnector(Affine, LinearTransformation, decartToCone,Linear3DTransformation);
 
-            PointTransformation = new TransformationConnector(Affine, decartToCone, Linear3DTransformation);
+            PointTransformation = new TransformationConnector(decartToCone, Linear3DTransformation);
             if (BzDrawer == null)
             {
                 BzDrawer = new Bezier5CurvesDrawer();
@@ -68,8 +68,8 @@ namespace CooridnateGrid
         }
         private void BindDecart()
         {
-            Bind(UStep, decartToCone, "EllipseDenominator");
-            Bind(VStep, decartToCone, "OneStepOnZAxis");
+            Bind(UStep, cone, "EllipseDenominator");
+            Bind(VStep, cone, "ZStep");
         }
 
         private void Lab6_Unselected(object sender, RoutedEventArgs e)
