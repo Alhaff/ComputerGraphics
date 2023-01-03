@@ -158,7 +158,7 @@ namespace CooridnateGrid.CoordinatePlane
         public void Draw(Graphics g)
         {
                 g.Clear(System.Drawing.Color.White);
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 foreach (var obj in Objects)
                 {
                     if (obj != null)
