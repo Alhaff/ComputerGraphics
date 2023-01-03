@@ -24,8 +24,8 @@
         <transform:RotateTransformation x:Key="rotate"/>
         <transform:ProjectiveTransformation x:Key="project"/>
         <transform:CentralProjectionTransformation x:Key="CentralProjection"/>
-        <transform:Rotate3DTransformations x:Key="RotateAxis"/> 
-        
+        <transform:Rotate3DTransformations x:Key="RotateAxis"/>
+        <drawObj:ZigzagFractal x:Key="MyZigzag"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -281,6 +281,49 @@
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <TextBlock Width="24" Text="v:"></TextBlock>
                                         <custom:SubmitTextBox x:Name="VStep"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem Header="Лаб7" 
+                                     Name="Lab7"
+                                     Selector.Selected="Lab7_Selected"
+                                     Selector.Unselected="Lab7_Unselected">
+                                <StackPanel Orientation="Vertical" DataContext="{DynamicResource MyZigzag}">
+                                    <StackPanel Orientation="Horizontal" Margin="0 2">
+                                        <TextBlock FontSize="14">Поточна кількість ітерацій:</TextBlock>
+                                        <custom:SubmitTextBox FontSize="14" Margin="2 0" 
+                                                              Text="{Binding IterationCount}">
+                                        </custom:SubmitTextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0 2">
+                                        <TextBlock FontSize="14">Випадкові проміжок від 0 до :</TextBlock>
+                                        <custom:SubmitTextBox FontSize="14" Margin="2 0" 
+                                                              Text="{Binding RandomGeneratorMaxValue}">
+                                        </custom:SubmitTextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0 2">
+                                        <TextBlock FontSize="14">Початкове точка:</TextBlock>
+                                        <custom:SubmitTextBox FontSize="14" Margin="2 0" 
+                                                              Text="{Binding StartPoint,
+                                                                    Converter = {StaticResource VectorConverter}}"
+                                                              >
+                                        </custom:SubmitTextBox>
+                                    </StackPanel>
+                                    <StackPanel Margin="10 0 10 0" Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <RepeatButton x:Name="ReduceIterationButton" Margin="5" Background="Transparent" Click="ReduceIterationButton_Click">
+                                            <Viewbox Width="40" Height="20">
+                                                <Canvas Width="24" Height="24">
+                                                    <Path Fill="Black" Data="M20 14H4V10H20" />
+                                                </Canvas>
+                                            </Viewbox>
+                                        </RepeatButton>
+                                        <RepeatButton x:Name="IncreaseIterationButton" Margin="5" Background="Transparent" Click="IncreaseIterationButton_Click">
+                                            <Viewbox Width="40" Height="20">
+                                                <Canvas Width="24" Height="24">
+                                                    <Path Fill="Black" Data="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z" />
+                                                </Canvas>
+                                            </Viewbox>
+                                        </RepeatButton>
                                     </StackPanel>
                                 </StackPanel>
                             </TabItem>
