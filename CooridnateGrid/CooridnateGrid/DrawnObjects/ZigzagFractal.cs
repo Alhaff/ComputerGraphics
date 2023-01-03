@@ -104,7 +104,7 @@ namespace CooridnateGrid.DrawnObjects
                                    Color.FromArgb(MyColor.A, MyColor.R, MyColor.G, MyColor.B)
                                               )
                                       ),
-                                new RectangleF(point.X, point.Y, 1.5f, 1.5f)
+                                new RectangleF(point.X, point.Y, Thickness, Thickness)
                              );
             }
         }
