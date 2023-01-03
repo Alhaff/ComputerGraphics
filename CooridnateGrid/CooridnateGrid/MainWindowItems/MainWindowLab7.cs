@@ -46,7 +46,7 @@ namespace CooridnateGrid
             if(Zigzag != null)
             {
                 accelerationDecrease = 0;
-                Zigzag.IterationCount +=1 +  (int)(1 * accelerationIncrease);
+                Zigzag.IterationCount +=1 +  (int)(accelerationIncrease * accelerationIncrease);
                 accelerationIncrease += 0.1f;
 
             }
@@ -57,7 +57,7 @@ namespace CooridnateGrid
             if (Zigzag != null)
             {
                 accelerationIncrease = 0;
-                Zigzag.IterationCount -= 1 +  (int)(1 * accelerationDecrease);
+                Zigzag.IterationCount -= 1 +  (int)(accelerationDecrease * accelerationDecrease);
                 accelerationDecrease += 0.1f;
             }
 
