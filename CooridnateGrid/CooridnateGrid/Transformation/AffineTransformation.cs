@@ -45,6 +45,18 @@ namespace CooridnateGrid.Transformation
 
         #endregion
 
+        public AffineTransformation()
+        {
+
+        }
+
+        public AffineTransformation(MyMatrix3x3 matrix)
+        {
+            _rx = new Vector3(matrix[0, 0], matrix[0, 1], matrix[0, 2]);
+            _ry = new Vector3(matrix[1, 0], matrix[1, 1], matrix[1, 2]);
+            _r0 = new Vector3(matrix[2, 0], matrix[2, 1], matrix[2, 2]);
+        }
+
         public override Func<Vector3, Vector3> Transform => v =>
         {
             var temp = R0 + (Rx * v.X) + (Ry * v.Y);
